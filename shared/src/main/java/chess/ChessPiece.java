@@ -57,7 +57,7 @@ public class ChessPiece {
         if (board.getPiece(myPosition) != null) {
             return valid_move_calculator(board, myPosition);
         }
-        return new ArrayList<>();
+        return null;
     }
 
     private Collection<ChessMove> valid_move_calculator(ChessBoard board, ChessPosition myPosition) {
@@ -343,7 +343,7 @@ public class ChessPiece {
 
                 if (pieceAtPosition == null) {
                     if (newPosition.getRow() == 8 && board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.WHITE) {
-                        promotion_options(valid_moves, newPosition, newPosition);
+                        promotion_options(valid_moves, myPosition, newPosition);
                     } else if (newPosition.getRow() == 1 && board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.BLACK) {
                         promotion_options(valid_moves, myPosition, newPosition);
                     } else {
@@ -387,7 +387,7 @@ public class ChessPiece {
 
                 if (pieceAtPosition != null && pieceAtPosition.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
                     if (newPosition.getRow() == 8 && board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.WHITE) {
-                        promotion_options(valid_moves, newPosition, newPosition);
+                        promotion_options(valid_moves, myPosition, newPosition);
                     } else if (newPosition.getRow() == 1 && board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.BLACK) {
                         promotion_options(valid_moves, myPosition, newPosition);
                     } else {
