@@ -296,6 +296,14 @@ public class ChessPiece {
 
     }
 
+    private int promotion_options(Collection<ChessMove> valid_moves, ChessPosition myPosition, ChessPosition newPosition) {
+        valid_moves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
+        valid_moves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
+        valid_moves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
+        valid_moves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
+        return 0;
+    }
+
 
     private Collection<ChessMove> pawn_move_calculator(ChessBoard board, ChessPosition myPosition) {
         ArrayList<ChessMove> valid_moves = new ArrayList<>();
@@ -329,16 +337,22 @@ public class ChessPiece {
             int newY = y + dy;
 
 //          while the coordinates are in the board area, initialize varibles and check for other pieces/ color
-            if (new ChessPosition(newX,newY).WithinBoard()) {
+            if (new ChessPosition(newX, newY).WithinBoard()) {
                 ChessPosition newPosition = new ChessPosition(newX, newY);
                 ChessPiece pieceAtPosition = board.getPiece(newPosition);
 
                 if (pieceAtPosition == null) {
-                    valid_moves.add(new ChessMove(myPosition, newPosition, null));
+                    if (newPosition.getRow() == 8 && board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.WHITE) {
+                        promotion_options(valid_moves, newPosition, newPosition);
+                    } else if (newPosition.getRow() == 1 && board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.BLACK) {
+                        promotion_options(valid_moves, myPosition, newPosition);
+                    } else {
+                        valid_moves.add(new ChessMove(myPosition, newPosition, null));
+                    }
                 }
             }
-
         }
+
 
 //      Adding taking mechanics
         int[][] take_directions = {};
@@ -359,25 +373,36 @@ public class ChessPiece {
 
         int newX = 0;
         int newY = 0;
+
         for (int[] direction : take_directions) {
             int dx = direction[0];
             int dy = direction[1];
             newX = x + dx;
             newY = y + dy;
+
+
+            if (new ChessPosition(newX, newY).WithinBoard()) {
+                ChessPosition newPosition = new ChessPosition(newX, newY);
+                ChessPiece pieceAtPosition = board.getPiece(newPosition);
+
+                if (pieceAtPosition != null && pieceAtPosition.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                    if (newPosition.getRow() == 8 && board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.WHITE) {
+                        promotion_options(valid_moves, newPosition, newPosition);
+                    } else if (newPosition.getRow() == 1 && board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.BLACK) {
+                        promotion_options(valid_moves, myPosition, newPosition);
+                    } else {
+                        valid_moves.add(new ChessMove(myPosition, newPosition, null));
+                    }
+                }
+            }
         }
 
-        if (new ChessPosition(newX,newY).WithinBoard()) {
-            ChessPosition newPosition = new ChessPosition(newX, newY);
-            ChessPiece pieceAtPosition = board.getPiece(newPosition);
-
-            if (pieceAtPosition != null && (pieceAtPosition.getTeamColor() != board.getPiece(myPosition).getTeamColor())) {
-                valid_moves.add(new ChessMove(myPosition, newPosition, null));}
-        }
 
 //        still needs fixing logic is probably too complicated for this form
-        ChessPosition in_front_1_white = new ChessPosition(3, y);
-        ChessPiece Piece_in_front_white = board.getPiece(in_front_1_white);
+
         if(myPosition.getRow()== 2){
+            ChessPosition in_front_1_white = new ChessPosition(3, y);
+            ChessPiece Piece_in_front_white = board.getPiece(in_front_1_white);
                 if (board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.WHITE) {
                     if (Piece_in_front_white == null) {
                         if (board.getPiece(new ChessPosition(4, y)) == null) {
@@ -387,10 +412,11 @@ public class ChessPiece {
                 }
         }
 
-        ChessPosition in_front_1_black = new ChessPosition(6, y);
-        ChessPiece Piece_in_front_black = board.getPiece(in_front_1_black);
+
 
         if(myPosition.getRow()== 7){
+            ChessPosition in_front_1_black = new ChessPosition(6, y);
+            ChessPiece Piece_in_front_black = board.getPiece(in_front_1_black);
             if (board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.BLACK) {
                 if (Piece_in_front_black == null) {
                     if (board.getPiece(new ChessPosition(5, y)) == null) {
