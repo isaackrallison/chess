@@ -65,6 +65,8 @@ public class ChessPiece {
             return bishop_move_calculator(board, myPosition);
         } else if (board.getPiece(myPosition).type == PieceType.ROOK) {
             return rook_move_calculator(board, myPosition);
+        } else if (board.getPiece(myPosition).type == PieceType.QUEEN) {
+            return queen_move_calculator(board, myPosition);
         }
         return new ArrayList<ChessMove>();
     }
@@ -130,6 +132,57 @@ public class ChessPiece {
                 {0,1},
                 {-1,0},
                 {0,-1}
+        };
+
+        int newX = 0;
+        int newY = 0;
+        int dx = 0;
+        int dy = 0;
+
+        for (int[] direction : poss_directions) {
+            dx = direction[0];
+            dy = direction[1];
+            newX = x + dx;
+            newY = y + dy;
+
+//          while the coordinates are in the board area, initialize varibles and check for other pieces/ color
+            while (new ChessPosition(newX,newY).WithinBoard()) {
+                ChessPosition newPosition = new ChessPosition(newX, newY);
+                ChessPiece pieceAtPosition = board.getPiece(newPosition);
+
+                if (pieceAtPosition == null) {
+                    valid_moves.add(new ChessMove(myPosition, newPosition, null));
+                } else {
+                    if (pieceAtPosition.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                        valid_moves.add(new ChessMove(myPosition, newPosition, null));
+                    }
+                    break;
+                }
+
+                newX = newX + dx;
+                newY = newY + dy;
+            }
+        }
+
+        return valid_moves;
+
+    }
+
+    private Collection<ChessMove> queen_move_calculator(ChessBoard board, ChessPosition myPosition) {
+        ArrayList<ChessMove> valid_moves = new ArrayList<ChessMove>();
+
+        int x = myPosition.getRow();
+        int y = myPosition.getColumn();
+
+        int[][] poss_directions = {
+                {1,0},
+                {0,1},
+                {-1,0},
+                {0,-1},
+                {1,1},
+                {1,-1},
+                {-1,1},
+                {-1,-1}
         };
 
         int newX = 0;
