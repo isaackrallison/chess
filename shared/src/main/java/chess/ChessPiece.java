@@ -71,13 +71,15 @@ public class ChessPiece {
             return king_move_calculator(board, myPosition);
         } else if (board.getPiece(myPosition).type == PieceType.KNIGHT) {
             return knight_move_calculator(board, myPosition);
+        } else if (board.getPiece(myPosition).type == PieceType.PAWN) {
+            return pawn_move_calculator(board, myPosition);
         }
-        return new ArrayList<ChessMove>();
+        return new ArrayList<>();
     }
 
     private Collection<ChessMove> bishop_move_calculator(ChessBoard board, ChessPosition myPosition) {
 //        create valid_move list
-        ArrayList<ChessMove> valid_moves = new ArrayList<ChessMove>();
+        ArrayList<ChessMove> valid_moves = new ArrayList<>();
 
         int x = myPosition.getRow();
         int y = myPosition.getColumn();
@@ -90,18 +92,12 @@ public class ChessPiece {
                 {-1,-1}
         };
 
-//      Initialize variable
-        int newX = 0;
-        int newY = 0;
-        int dx = 0;
-        int dy = 0;
-
 //      Loop through direction array, adding (or subtracting) x and y each time
         for (int[] direction : poss_directions) {
-            dx = direction[0];
-            dy = direction[1];
-            newX = x + dx;
-            newY = y + dy;
+            int dx = direction[0];
+            int dy = direction[1];
+            int newX = x + dx;
+            int newY = y + dy;
 
 //          while the coordinates are in the board area, initialize varibles and check for other pieces/ color
             while (new ChessPosition(newX,newY).WithinBoard()) {
@@ -126,7 +122,7 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> rook_move_calculator(ChessBoard board, ChessPosition myPosition) {
-        ArrayList<ChessMove> valid_moves = new ArrayList<ChessMove>();
+        ArrayList<ChessMove> valid_moves = new ArrayList<>();
 
         int x = myPosition.getRow();
         int y = myPosition.getColumn();
@@ -138,16 +134,11 @@ public class ChessPiece {
                 {0,-1}
         };
 
-        int newX = 0;
-        int newY = 0;
-        int dx = 0;
-        int dy = 0;
-
         for (int[] direction : poss_directions) {
-            dx = direction[0];
-            dy = direction[1];
-            newX = x + dx;
-            newY = y + dy;
+            int dx = direction[0];
+            int dy = direction[1];
+            int newX = x + dx;
+            int newY = y + dy;
 
 //          while the coordinates are in the board area, initialize varibles and check for other pieces/ color
             while (new ChessPosition(newX,newY).WithinBoard()) {
@@ -173,7 +164,7 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> queen_move_calculator(ChessBoard board, ChessPosition myPosition) {
-        ArrayList<ChessMove> valid_moves = new ArrayList<ChessMove>();
+        ArrayList<ChessMove> valid_moves = new ArrayList<>();
 
         int x = myPosition.getRow();
         int y = myPosition.getColumn();
@@ -190,16 +181,11 @@ public class ChessPiece {
                 {-1,-1}
         };
 
-        int newX = 0;
-        int newY = 0;
-        int dx = 0;
-        int dy = 0;
-
         for (int[] direction : poss_directions) {
-            dx = direction[0];
-            dy = direction[1];
-            newX = x + dx;
-            newY = y + dy;
+            int dx = direction[0];
+            int dy = direction[1];
+            int newX = x + dx;
+            int newY = y + dy;
 
 //          while the coordinates are in the board area, initialize varibles and check for other pieces/ color
             while (new ChessPosition(newX,newY).WithinBoard()) {
@@ -225,7 +211,7 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> king_move_calculator(ChessBoard board, ChessPosition myPosition) {
-        ArrayList<ChessMove> valid_moves = new ArrayList<ChessMove>();
+        ArrayList<ChessMove> valid_moves = new ArrayList<>();
 
         int x = myPosition.getRow();
         int y = myPosition.getColumn();
@@ -241,16 +227,11 @@ public class ChessPiece {
                 {-1,-1}
         };
 
-        int newX = 0;
-        int newY = 0;
-        int dx = 0;
-        int dy = 0;
-
         for (int[] direction : poss_directions) {
-            dx = direction[0];
-            dy = direction[1];
-            newX = x + dx;
-            newY = y + dy;
+            int dx = direction[0];
+            int dy = direction[1];
+            int newX = x + dx;
+            int newY = y + dy;
 
 //          while the coordinates are in the board area, initialize varibles and check for other pieces/ color
 //          King has an if statement instead of a while
@@ -264,12 +245,7 @@ public class ChessPiece {
                     if (pieceAtPosition.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
                         valid_moves.add(new ChessMove(myPosition, newPosition, null));
                     }
-//                  continue instead of break statement to loop through all directions
-                    continue;
                 }
-
-                newX = newX + dx;
-                newY = newY + dy;
             }
         }
 
@@ -278,7 +254,7 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> knight_move_calculator(ChessBoard board, ChessPosition myPosition) {
-        ArrayList<ChessMove> valid_moves = new ArrayList<ChessMove>();
+        ArrayList<ChessMove> valid_moves = new ArrayList<>();
 
         int x = myPosition.getRow();
         int y = myPosition.getColumn();
@@ -294,16 +270,11 @@ public class ChessPiece {
                 {-1,-2},
         };
 
-        int newX = 0;
-        int newY = 0;
-        int dx = 0;
-        int dy = 0;
-
         for (int[] direction : poss_directions) {
-            dx = direction[0];
-            dy = direction[1];
-            newX = x + dx;
-            newY = y + dy;
+            int dx = direction[0];
+            int dy = direction[1];
+            int newX = x + dx;
+            int newY = y + dy;
 
 //          while the coordinates are in the board area, initialize varibles and check for other pieces/ color
 //          If like the king because it has a saved set of spaces it can move
@@ -317,8 +288,6 @@ public class ChessPiece {
                     if (pieceAtPosition.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
                         valid_moves.add(new ChessMove(myPosition, newPosition, null));
                     }
-//                  continue instead of break statement to loop through all directions in case there is a piece we can take
-                    continue;
                 }
             }
         }
@@ -327,6 +296,112 @@ public class ChessPiece {
 
     }
 
+
+    private Collection<ChessMove> pawn_move_calculator(ChessBoard board, ChessPosition myPosition) {
+        ArrayList<ChessMove> valid_moves = new ArrayList<>();
+
+        int x = myPosition.getRow();
+        int y = myPosition.getColumn();
+
+//      The pawn is different from all other pieces, it can move up or down based on its color and
+//      sideways based upon there being a piece diagonal to it in the same direction it moves
+
+//      for moving foreward as the pawn
+        int[][] poss_directions = {};
+        int[][] black_pawn_poss = {
+                {-1,0}
+        };
+
+        int[][] white_pawn_poss = {
+                {1,0}
+        };
+
+        if (board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.WHITE){
+            poss_directions = white_pawn_poss.clone();
+        } else {poss_directions = black_pawn_poss.clone();
+        }
+
+
+        for (int[] direction : poss_directions) {
+            int dx = direction[0];
+            int dy = direction[1];
+            int newX = x + dx;
+            int newY = y + dy;
+
+//          while the coordinates are in the board area, initialize varibles and check for other pieces/ color
+            if (new ChessPosition(newX,newY).WithinBoard()) {
+                ChessPosition newPosition = new ChessPosition(newX, newY);
+                ChessPiece pieceAtPosition = board.getPiece(newPosition);
+
+                if (pieceAtPosition == null) {
+                    valid_moves.add(new ChessMove(myPosition, newPosition, null));
+                }
+            }
+
+        }
+
+//      Adding taking mechanics
+        int[][] take_directions = {};
+        int[][] black_pawn_take = {
+                {-1,1},
+                {-1,-1}
+        };
+
+        int[][] white_pawn_take = {
+                {1,1},
+                {1,-1}
+        };
+
+        if (board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.WHITE){
+            take_directions = white_pawn_take.clone();
+        } else {take_directions = black_pawn_take.clone();
+        }
+
+        int newX = 0;
+        int newY = 0;
+        for (int[] direction : take_directions) {
+            int dx = direction[0];
+            int dy = direction[1];
+            newX = x + dx;
+            newY = y + dy;
+        }
+
+        if (new ChessPosition(newX,newY).WithinBoard()) {
+            ChessPosition newPosition = new ChessPosition(newX, newY);
+            ChessPiece pieceAtPosition = board.getPiece(newPosition);
+
+            if (pieceAtPosition != null && (pieceAtPosition.getTeamColor() != board.getPiece(myPosition).getTeamColor())) {
+                valid_moves.add(new ChessMove(myPosition, newPosition, null));}
+        }
+
+//        still needs fixing logic is probably too complicated for this form
+        ChessPosition in_front_1_white = new ChessPosition(3, y);
+        ChessPiece Piece_in_front_white = board.getPiece(in_front_1_white);
+        if(myPosition.getRow()== 2){
+                if (board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.WHITE) {
+                    if (Piece_in_front_white == null) {
+                        if (board.getPiece(new ChessPosition(4, y)) == null) {
+                            valid_moves.add(new ChessMove(myPosition, new ChessPosition((4), y), null));
+                        }
+                    }
+                }
+        }
+
+        ChessPosition in_front_1_black = new ChessPosition(6, y);
+        ChessPiece Piece_in_front_black = board.getPiece(in_front_1_black);
+
+        if(myPosition.getRow()== 7){
+            if (board.getPiece(myPosition).pieceColor == ChessGame.TeamColor.BLACK) {
+                if (Piece_in_front_black == null) {
+                    if (board.getPiece(new ChessPosition(5, y)) == null) {
+                        valid_moves.add(new ChessMove(myPosition, new ChessPosition((5), y), null));
+                    }
+                }
+            }
+        }
+        return valid_moves;
+
+    }
 
 
     @Override
