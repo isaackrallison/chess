@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -53,6 +54,79 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        if (board.getPiece(myPosition) != null) {
+            return valid_move_calculator(board, myPosition);
+        }
         return new ArrayList<>();
+    }
+
+    private Collection<ChessMove> valid_move_calculator(ChessBoard board, ChessPosition myPosition) {
+        if (board.getPiece(myPosition).type == PieceType.BISHOP) {
+            return bishop_move_calculator(board, myPosition);
+        }
+        return new ArrayList<ChessMove>();
+    }
+
+    private Collection<ChessMove> bishop_move_calculator(ChessBoard board, ChessPosition myPosition) {
+//        create valid_move list
+        ArrayList<ChessMove> valid_moves = new ArrayList<ChessMove>();
+
+        int x = myPosition.getRow();
+        int y = myPosition.getColumn();
+
+//      Build int array for possible direction piece can move
+        int[][] poss_directions = {
+                {1,1},
+                {1,-1},
+                {-1,1},
+                {-1,-1}
+        };
+
+//      Initialize variable
+        int newX = 0;
+        int newY = 0;
+        int dx = 0;
+        int dy = 0;
+
+//      Loop through direction array, adding (or subtracting) x and y each time
+        for (int[] direction : poss_directions) {
+            dx = direction[0];
+            dy = direction[1];
+            newX = x + dx;
+            newY = y + dy;
+
+//          while the coordinates are in the board area, initialize varibles and check for other pieces/ color
+            while (new ChessPosition(newX,newY).WithinBoard()) {
+                ChessPosition newPosition = new ChessPosition(newX, newY);
+                ChessPiece pieceAtPosition = board.getPiece(newPosition);
+
+                if (pieceAtPosition == null) {
+                    valid_moves.add(new ChessMove(myPosition, newPosition, null));
+                } else {
+                    if (pieceAtPosition.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                        valid_moves.add(new ChessMove(myPosition, newPosition, null));
+                    }
+                    break;
+                }
+
+                newX = newX + dx;
+                newY = newY + dy;
+            }
+        }
+
+        return valid_moves;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPiece that = (ChessPiece) o;
+        return pieceColor == that.pieceColor && type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceColor, type);
     }
 }
