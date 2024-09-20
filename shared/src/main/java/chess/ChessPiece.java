@@ -175,6 +175,7 @@ public class ChessPiece {
         int x = myPosition.getRow();
         int y = myPosition.getColumn();
 
+//      queen has a combination of rook and bishop movement
         int[][] poss_directions = {
                 {1,0},
                 {0,1},
@@ -249,6 +250,7 @@ public class ChessPiece {
             newY = y + dy;
 
 //          while the coordinates are in the board area, initialize varibles and check for other pieces/ color
+//          King has an if statement instead of a while
             if (new ChessPosition(newX,newY).WithinBoard()) {
                 ChessPosition newPosition = new ChessPosition(newX, newY);
                 ChessPiece pieceAtPosition = board.getPiece(newPosition);
@@ -259,6 +261,7 @@ public class ChessPiece {
                     if (pieceAtPosition.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
                         valid_moves.add(new ChessMove(myPosition, newPosition, null));
                     }
+//                  continue instead of break statement to loop through all directions
                     continue;
                 }
 
