@@ -46,7 +46,7 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        return getBoard().getPiece(startPosition).pieceMoves(getBoard(), startPosition);
     }
 
     /**
@@ -96,7 +96,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        board.resetBoard();;
     }
 
     /**
