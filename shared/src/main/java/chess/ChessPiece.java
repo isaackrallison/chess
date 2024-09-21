@@ -99,7 +99,7 @@ public class ChessPiece {
             int newX = x + dx;
             int newY = y + dy;
 
-//          while the coordinates are in the board area, initialize varibles and check for other pieces/ color
+//          while the coordinates are in the board area, initialize variables and check for other pieces/ color
             while (new ChessPosition(newX,newY).WithinBoard()) {
                 ChessPosition newPosition = new ChessPosition(newX, newY);
                 ChessPiece pieceAtPosition = board.getPiece(newPosition);
@@ -140,7 +140,7 @@ public class ChessPiece {
             int newX = x + dx;
             int newY = y + dy;
 
-//          while the coordinates are in the board area, initialize varibles and check for other pieces/ color
+//          while the coordinates are in the board area, initialize variables and check for other pieces/ color
             while (new ChessPosition(newX,newY).WithinBoard()) {
                 ChessPosition newPosition = new ChessPosition(newX, newY);
                 ChessPiece pieceAtPosition = board.getPiece(newPosition);
@@ -187,7 +187,7 @@ public class ChessPiece {
             int newX = x + dx;
             int newY = y + dy;
 
-//          while the coordinates are in the board area, initialize varibles and check for other pieces/ color
+//          while the coordinates are in the board area, initialize variables and check for other pieces/ color
             while (new ChessPosition(newX,newY).WithinBoard()) {
                 ChessPosition newPosition = new ChessPosition(newX, newY);
                 ChessPiece pieceAtPosition = board.getPiece(newPosition);
@@ -233,7 +233,7 @@ public class ChessPiece {
             int newX = x + dx;
             int newY = y + dy;
 
-//          while the coordinates are in the board area, initialize varibles and check for other pieces/ color
+//          while the coordinates are in the board area, initialize variables and check for other pieces/ color
 //          King has an if statement instead of a while
             if (new ChessPosition(newX,newY).WithinBoard()) {
                 ChessPosition newPosition = new ChessPosition(newX, newY);
@@ -276,7 +276,7 @@ public class ChessPiece {
             int newX = x + dx;
             int newY = y + dy;
 
-//          while the coordinates are in the board area, initialize varibles and check for other pieces/ color
+//          while the coordinates are in the board area, initialize variables and check for other pieces/ color
 //          If like the king because it has a saved set of spaces it can move
             if (new ChessPosition(newX,newY).WithinBoard()) {
                 ChessPosition newPosition = new ChessPosition(newX, newY);
@@ -314,7 +314,7 @@ public class ChessPiece {
 //      The pawn is different from all other pieces, it can move up or down based on its color and
 //      sideways based upon there being a piece diagonal to it in the same direction it moves
 
-//      for moving foreward as the pawn
+//      for moving forward as the pawn
         int[][] poss_directions = {};
         int[][] black_pawn_poss = {
                 {-1,0}
@@ -336,7 +336,7 @@ public class ChessPiece {
             int newX = x + dx;
             int newY = y + dy;
 
-//          while the coordinates are in the board area, initialize varibles and check for other pieces/ color
+//          while the coordinates are in the board area, initialize variables and check for other pieces/ color
             if (new ChessPosition(newX, newY).WithinBoard()) {
                 ChessPosition newPosition = new ChessPosition(newX, newY);
                 ChessPiece pieceAtPosition = board.getPiece(newPosition);
@@ -397,9 +397,7 @@ public class ChessPiece {
             }
         }
 
-
-//        still needs fixing logic is probably too complicated for this form
-
+//      checks to see if the pawn can move two spaces
         if(myPosition.getRow()== 2){
             ChessPosition in_front_1_white = new ChessPosition(3, y);
             ChessPiece Piece_in_front_white = board.getPiece(in_front_1_white);
