@@ -34,10 +34,6 @@ public class ChessPosition {
         return col;
     }
 
-    public boolean WithinBoard() {
-        return row > 0 && row <= 8 && col > 0 && col <= 8;
-    }
-
     @Override
     public String toString() {
         return "[" + row + "," + col +"]";
