@@ -9,7 +9,7 @@ import java.util.Arrays;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    final private ChessPiece[][] squares = new ChessPiece[8][8];
+    public ChessPiece[][] squares = new ChessPiece[8][8];
     public ChessBoard() {
         
     }
@@ -65,11 +65,25 @@ public class ChessBoard {
         squares[7][7] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
     }
 
+
     @Override
     public String toString() {
-        return "ChessBoard{" +
-                "squares=" + Arrays.toString(squares) +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("ChessBoard:\n");
+        for (int row = 0; row < squares.length; row++) {
+            for (int col = 0; col < squares[row].length; col++) {
+                ChessPiece piece = squares[row][col];
+                if (piece != null) {
+                    sb.append(piece.getPieceType().toString().charAt(0))
+                            .append(piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "W" : "B")
+                            .append(" ");
+                } else {
+                    sb.append(".. ");
+                }
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 
     @Override
