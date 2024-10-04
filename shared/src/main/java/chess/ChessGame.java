@@ -90,6 +90,7 @@ public class ChessGame {
                     valid_moves.add(move);
                 }
             } catch (InvalidMoveException e) {
+                continue;
             } finally {
                 // Restore the original board state
                 setBoard(originalBoard);
@@ -112,12 +113,6 @@ public class ChessGame {
             throw new InvalidMoveException("No piece at start position");
         }
 
-        if (board.getPiece(move.getEndPosition()) != null) {
-            if (board.getPiece(move.getEndPosition()).getTeamColor() == getTeamTurn()) {
-                throw new InvalidMoveException("Can't take your own piece");
-            }
-        }
-
         if (!board.getPiece(move.getStartPosition()).pieceMoves(board, move.getStartPosition()).contains(move)) {
             throw new InvalidMoveException("Not contained in valid moves");
         }
@@ -125,20 +120,24 @@ public class ChessGame {
         if (getTeamTurn() != board.getPiece(move.getStartPosition()).getTeamColor())
             throw new InvalidMoveException("Out of Turn");
 
-//        board.getPiece(move.getStartPosition()).PieceType  = move.getPromotionPiece();
-//        if (promotion != null) {
-////            continue
-//            board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
-//        } else {
-//            board.addPiece(move.getEndPosition(), piece);
-//        }
-        board.addPiece(move.getEndPosition(), piece);
+        ChessPiece promo = board.getPiece(move.getStartPosition());
+        if (move.getPromotionPiece() != null) {
+            ChessPiece.PieceType thing = move.getPromotionPiece();
+            promo = new ChessPiece(board.getPiece(move.getStartPosition()).getTeamColor(), thing);
+        }
+
+        board.addPiece(move.getEndPosition(), promo);
         board.addPiece(move.getStartPosition(), null);
 
         if (isInCheck(getTeamTurn())) {
             throw new InvalidMoveException("Can't move King into check");
         }
 
+        if (getTeamTurn() == TeamColor.BLACK) {
+            setTeamTurn(TeamColor.WHITE);
+        } else {
+            setTeamTurn(TeamColor.BLACK);
+        }
     }
 
     private ChessPosition findKing(TeamColor teamColor) {
