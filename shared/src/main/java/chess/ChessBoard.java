@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -65,18 +66,23 @@ public class ChessBoard {
         squares[7][7] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
     }
 
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("ChessBoard:\n");
-        for (int row = 0; row < squares.length; row++) {
+        for (int row = squares.length - 1; row >= 0; row--) {
             for (int col = 0; col < squares[row].length; col++) {
                 ChessPiece piece = squares[row][col];
                 if (piece != null) {
-                    sb.append(piece.getPieceType().toString().charAt(0))
-                            .append(piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "W" : "B")
-                            .append(" ");
+                    if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
+                        sb.append("N")
+                                .append(piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "W" : "B")
+                                .append(" ");
+                    } else {
+                        sb.append(piece.getPieceType().toString().charAt(0))
+                                .append(piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "W" : "B")
+                                .append(" ");
+                    }
                 } else {
                     sb.append(".. ");
                 }
@@ -85,6 +91,7 @@ public class ChessBoard {
         }
         return sb.toString();
     }
+
 
     @Override
     public boolean equals(Object o) {

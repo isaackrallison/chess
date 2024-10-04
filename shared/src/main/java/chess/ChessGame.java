@@ -111,8 +111,34 @@ public class ChessGame {
         if (piece == null) {
             throw new InvalidMoveException("No piece at start position");
         }
+
+        if (board.getPiece(move.getEndPosition()) != null) {
+            if (board.getPiece(move.getEndPosition()).getTeamColor() == getTeamTurn()) {
+                throw new InvalidMoveException("Can't take your own piece");
+            }
+        }
+
+        if (!board.getPiece(move.getStartPosition()).pieceMoves(board, move.getStartPosition()).contains(move)) {
+            throw new InvalidMoveException("Not contained in valid moves");
+        }
+
+        if (getTeamTurn() != board.getPiece(move.getStartPosition()).getTeamColor())
+            throw new InvalidMoveException("Out of Turn");
+
+//        board.getPiece(move.getStartPosition()).PieceType  = move.getPromotionPiece();
+//        if (promotion != null) {
+////            continue
+//            board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
+//        } else {
+//            board.addPiece(move.getEndPosition(), piece);
+//        }
         board.addPiece(move.getEndPosition(), piece);
         board.addPiece(move.getStartPosition(), null);
+
+        if (isInCheck(getTeamTurn())) {
+            throw new InvalidMoveException("Can't move King into check");
+        }
+
     }
 
     private ChessPosition findKing(TeamColor teamColor) {
@@ -124,7 +150,7 @@ public class ChessGame {
                 }
             }
         }
-        throw new RuntimeException("King not found");
+        return null;
     }
 
     private Set<ChessMove> enemyMoves(TeamColor teamColor) {
@@ -173,11 +199,39 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         if (isInCheck(teamColor)) {
-            if (validMoves(findKing(teamColor)) != null) {
-                return true;
+            ChessPosition kingPos = findKing(teamColor);
+            Collection<ChessMove> kingMoves = validMoves(kingPos);
+
+            TeamColor opponentColor = TeamColor.WHITE;
+            if (teamColor == TeamColor.WHITE) {
+                opponentColor = TeamColor.BLACK;
             }
-        }
-        return false;
+
+            Set<ChessMove> enemyMoves = enemyMoves(opponentColor);
+            Set<ChessMove> teamMoves = enemyMoves(teamColor);
+
+            for (ChessMove enemyMove : enemyMoves) {
+                if (enemyMove.getEndPosition().equals(kingPos)) {
+                    for (ChessMove teamMove : teamMoves) {
+                        ChessPosition team = teamMove.getEndPosition();
+                        ChessPosition enemy = enemyMove.getStartPosition();
+                        if (this.board.getPiece(teamMove.getStartPosition()).getPieceType() == ChessPiece.PieceType.KING) {
+                            if (enemyMove.getEndPosition().equals(teamMove.getEndPosition())) {
+                                continue;
+                            }
+                        }
+                        if (team.equals(enemy)) {
+
+                            return false;
+
+                            }
+
+                            return false;
+                        }
+                    }
+                }
+            }
+        return true;
     }
 
     /**
