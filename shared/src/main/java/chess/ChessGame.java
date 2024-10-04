@@ -16,6 +16,8 @@ public class ChessGame {
     public ChessGame() {
 
         this.color = TeamColor.WHITE;
+        this.board = new ChessBoard();
+        this.board.resetBoard();
     }
 
     /**
@@ -170,7 +172,12 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (isInCheck(teamColor)) {
+            if (validMoves(findKing(teamColor)) != null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -181,7 +188,8 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        Set<ChessMove> enemy = enemyMoves(teamColor);
+        return enemyMoves(teamColor).equals(new HashSet<>());
     }
 
     /**
