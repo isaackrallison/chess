@@ -68,6 +68,7 @@ public class ChessGame {
 
 
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+        setTeamTurn(board.getPiece(startPosition).getTeamColor());
         ChessPiece piece = getBoard().getPiece(startPosition);
         if (piece == null) {
             return null;
@@ -95,6 +96,14 @@ public class ChessGame {
                 // Restore the original board state
                 setBoard(originalBoard);
 
+
+
+            }
+
+            if (getTeamTurn() == TeamColor.BLACK) {
+                setTeamTurn(TeamColor.WHITE);
+            } else {
+                setTeamTurn(TeamColor.BLACK);
             }
         }
         return valid_moves;
@@ -117,7 +126,7 @@ public class ChessGame {
             throw new InvalidMoveException("Not contained in valid moves");
         }
 
-        if (getTeamTurn() != board.getPiece(move.getStartPosition()).getTeamColor())
+        if (board.getPiece(move.getStartPosition()).getTeamColor() != getTeamTurn())
             throw new InvalidMoveException("Out of Turn");
 
         ChessPiece promo = board.getPiece(move.getStartPosition());
@@ -214,23 +223,46 @@ public class ChessGame {
                     for (ChessMove teamMove : teamMoves) {
                         ChessPosition team = teamMove.getEndPosition();
                         ChessPosition enemy = enemyMove.getStartPosition();
-                        if (this.board.getPiece(teamMove.getStartPosition()).getPieceType() == ChessPiece.PieceType.KING) {
-                            if (enemyMove.getEndPosition().equals(teamMove.getEndPosition())) {
-                                continue;
+//                        if (this.board.getPiece(teamMove.getStartPosition()).getPieceType() == ChessPiece.PieceType.KING) {
+//                            if (enemyMove.getEndPosition().equals(teamMove.getEndPosition())) {
+//                                continue;
+//                            }
+//                        }
+
+                        Iterator<ChessMove> iterator = kingMoves.iterator();
+                        Collection<ChessMove> valid_moves = new ArrayList<>();
+                        TeamColor myColor = board.getPiece(kingPos).getTeamColor();
+
+                        if (!kingMoves.isEmpty()) {
+
+                            while (iterator.hasNext()) {
+                                ChessMove move = iterator.next();
+                                // Save the current state of the board
+                                ChessBoard originalBoard = cloneBoard(getBoard());
+
+
+                                try {
+                                    makeMove(move);
+                                    if (!isInCheck(myColor)) {
+                                        valid_moves.add(move);
+                                    }
+                                } catch (InvalidMoveException e) {
+                                    continue;
+                                } finally {
+                                    // Restore the original board state
+                                    setBoard(originalBoard);
+
+
+
+                                }
                             }
                         }
-                        if (team.equals(enemy)) {
-
-                            return false;
-
-                            }
-
-                            return false;
-                        }
+                        return !team.equals(enemy);
+                    }
                     }
                 }
             }
-        return true;
+        return false;
     }
 
     /**
@@ -241,8 +273,9 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        Set<ChessMove> enemy = enemyMoves(teamColor);
-        return enemyMoves(teamColor).equals(new HashSet<>());
+        ChessPosition kingPos = findKing(teamColor);
+        Collection<ChessMove> kingMoves = validMoves(kingPos);
+        return kingMoves.isEmpty();
     }
 
     /**
