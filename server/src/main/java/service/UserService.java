@@ -3,6 +3,7 @@ package service;
 import dataaccess.AuthDAO;
 import dataaccess.UserDAO;
 import model.AuthData;
+import model.RegisterResult;
 import model.UserData;
 import model.LoginReturn;
 
@@ -15,7 +16,7 @@ public class UserService {
         this.authDAO = authDAO;
     }
 
-    public UserData register(String username, String password, String email) {
+    public RegisterResult register(String username, String password, String email) {
         UserData existingUser = userDAO.getUser(username);
         if (existingUser != null) {
             throw new RuntimeException("User already exists");
@@ -23,7 +24,7 @@ public class UserService {
         UserData newUser = new UserData(username, password, email);
         userDAO.createUser(newUser);
         AuthData authData = authDAO.createAuth(new AuthData("Token", newUser.username()));
-        return new UserData(newUser.username(), newUser.password(), authData.authToken());
+        return new RegisterResult(newUser.username(), authData.authToken());
     }
 
     public LoginReturn login(String username, String password) {
