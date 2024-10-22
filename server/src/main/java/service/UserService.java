@@ -22,7 +22,7 @@ public class UserService {
         }
         UserData newUser = new UserData(username, password, email);
         userDAO.createUser(newUser);
-        AuthData authData = authDAO.createAuth(newUser);
+        AuthData authData = authDAO.createAuth(new AuthData("Token", newUser.username()));
         return new UserData(newUser.username(), newUser.password(), authData.authToken());
     }
 
@@ -31,7 +31,7 @@ public class UserService {
         if (user == null || !user.password().equals(password)) {
             throw new RuntimeException("Invalid username or password");
         }
-        AuthData authData = authDAO.createAuth(user);
+        AuthData authData = authDAO.createAuth(new AuthData("Token", username));
         return new LoginReturn(user.username(), authData.authToken());
     }
 
