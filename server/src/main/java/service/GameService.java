@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.*;
 import model.GameData;
+import dataaccess.UnauthorizedException;
 import chess.ChessGame;
 
 import java.util.List;
@@ -10,18 +11,25 @@ public class GameService {
     private final GameDAO gameDAO;
     private final AuthDAO authDAO;
     private final UserDAO userDAO;
+    private int GameIdNum;
 
     public GameService(GameDAO gameDAO, AuthDAO authDAO, UserDAO userDAO) {
         this.gameDAO = gameDAO;
         this.authDAO = authDAO;
         this.userDAO = userDAO;
+        this.GameIdNum = 0;
+
 
     }
 
-    public GameData createGame(String whiteUsername, String blackUsername, String gameName) {
+    public int createGame(String gameName, String authToken) {
+        if (!authDAO.validateAuth(authToken)) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
         ChessGame newGame = new ChessGame();
-        gameDAO.createGame(newGame);
-        return new GameData(1, whiteUsername, blackUsername, gameName, newGame);
+        GameIdNum++;
+        gameDAO.createGame(GameIdNum, newGame);
+        return GameIdNum;
     }
 
     public List<ChessGame> listGames() {

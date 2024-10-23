@@ -3,6 +3,7 @@ package server;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryGameDAO;
 import dataaccess.MemoryUserDAO;
+import service.AuthService;
 import service.GameService;
 import service.UserService;
 import spark.Spark;
@@ -15,6 +16,7 @@ public class Server {
         Spark.post("/session", new LoginHandler(userService));
         Spark.delete("/db", new ClearHandler(gameService));
         Spark.delete("/session", new LogoutHandler(userService));
+        Spark.post("/game", new CreateGameHandler(gameService));
     }
 
     public int run(int desiredPort) {
@@ -30,6 +32,7 @@ public class Server {
         // Pass DAO instances to UserService
         UserService userService = new UserService(userDAO, authDAO);
         GameService gameService = new GameService(gameDAO, authDAO, userDAO);
+        AuthService authService = new AuthService(authDAO, userDAO);
 
 
         setUpHandlers(userService, gameService);

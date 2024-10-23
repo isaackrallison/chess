@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class MemoryGameDAO implements GameDAO {
     private final Map<Integer, ChessGame> gameStorage = new HashMap<>();
-    private int gameIdCounter = 1;
+
 
     @Override
     public List<ChessGame> getAllGames() {
@@ -16,8 +16,8 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
-    public void createGame(ChessGame game) {
-        gameStorage.put(gameIdCounter++, game);
+    public void createGame(int GameIdNum, ChessGame game) {
+        gameStorage.put(GameIdNum, game);
     }
 
     @Override

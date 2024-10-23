@@ -8,4 +8,5 @@ public interface AuthDAO {
     AuthData createAuth(AuthData authData);
     void deleteAuthToken(String authToken);
     void clearAuths();
+    boolean validateAuth(String authToken);
 }

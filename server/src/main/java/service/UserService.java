@@ -42,10 +42,10 @@ public class UserService {
     }
 
     public void logout(String authToken) {
-        AuthData authData = authDAO.getAuthToken(authToken);
-        if (authData == null) {
+        if (!authDAO.validateAuth(authToken)) {
             throw new UnauthorizedException("Error: unauthorized");
         }
+        AuthData authData = authDAO.getAuthToken(authToken);
         authDAO.deleteAuthToken(authToken);
     }
 }
