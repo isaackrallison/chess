@@ -4,18 +4,17 @@ import service.UserService;
 import spark.Spark;
 
 public class Server {
-    private final UserService userService;
 
-    public Server(UserService userService) {
-        this.userService = userService;
+    public void setUpHandlers(UserService userService) {
+        // Define routes and pass the relevant service to the handlers
+        Spark.post("/user", new RegisterHandler(userService));
+        Spark.post("/session", new LoginHandler(userService));
     }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
-
-        Spark.post("/user", new RegisterHandler(userService));
 
         // Initialize the server
         Spark.init();
@@ -28,6 +27,7 @@ public class Server {
         Spark.awaitStop();
     }
 }
+
 
 
 

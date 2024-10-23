@@ -3,17 +3,17 @@ package server;
 import com.google.gson.Gson;
 import model.RegisterRequest;
 import model.RegisterResult;
-import model.ErrorResponse;
 import service.UserService;
+import model.ErrorResponse;
 import spark.Request;
 import spark.Response;
 import spark.Route;
+import dataaccess.ExistsException;
 
 public class RegisterHandler implements Route {
     private final UserService userService;
     private final Gson gson = new Gson();
 
-    // Constructor to pass UserService
     public RegisterHandler(UserService userService) {
         this.userService = userService;
     }
@@ -21,32 +21,38 @@ public class RegisterHandler implements Route {
     @Override
     public Object handle(Request req, Response res) {
         try {
-            // Parse the incoming JSON request body into RegisterRequest object
+            // Parse the JSON request body into a RegisterRequest object
             RegisterRequest registerRequest = gson.fromJson(req.body(), RegisterRequest.class);
 
-            // Call the service layer to process registration
+            // Call the service layer to register the user
             RegisterResult result = userService.register(
                     registerRequest.username(),
                     registerRequest.password(),
                     registerRequest.email()
             );
 
-            // Set response type to JSON and status to 200 (OK)
+            // Set response type and status for success
             res.type("application/json");
             res.status(200);
 
-            // Return the result as a JSON response
+            // Return the RegisterResult serialized as JSON
             return gson.toJson(result);
-
-        } catch (Exception e) {
-            // In case of errors, set the status to 400 (Bad Request)
+        } catch (ExistsException e) {
+            // Set response code for username already taken
+            res.status(403);
+            return gson.toJson(new ErrorResponse("Error: already taken"));
+        } catch (IllegalArgumentException e) {
+            // Set response code for bad request (invalid input)
             res.status(400);
-
-            // Return a JSON error response
-            return gson.toJson(new ErrorResponse(e.getMessage()));
+            return gson.toJson(new ErrorResponse("Error: bad request"));
+        } catch (Exception e) {
+            // Handle any other unexpected errors
+            res.status(500);
+            return gson.toJson(new ErrorResponse("Error: unexpected server error"));
         }
     }
 }
+
 
 
 

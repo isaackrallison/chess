@@ -5,7 +5,9 @@ import dataaccess.UserDAO;
 import model.AuthData;
 import model.RegisterResult;
 import model.UserData;
-import model.LoginReturn;
+import model.LoginResult;
+import dataaccess.ExistsException;
+import static service.AuthTokenCreator.generateToken;
 
 public class UserService {
     private final UserDAO userDAO;
@@ -18,22 +20,25 @@ public class UserService {
 
     public RegisterResult register(String username, String password, String email) {
         UserData existingUser = userDAO.getUser(username);
-        if (existingUser != null) {
-            throw new RuntimeException("User already exists");
+        if (username == null|| password == null|| email == null) {
+            throw new IllegalArgumentException("Error: bad request");
+        } else if (existingUser != null) {
+            throw new ExistsException("User already exists");
         }
         UserData newUser = new UserData(username, password, email);
         userDAO.createUser(newUser);
-        AuthData authData = authDAO.createAuth(new AuthData("Token", newUser.username()));
+
+        AuthData authData = authDAO.createAuth(new AuthData(generateToken(), newUser.username()));
         return new RegisterResult(newUser.username(), authData.authToken());
     }
 
-    public LoginReturn login(String username, String password) {
+    public LoginResult login(String username, String password) {
         UserData user = userDAO.getUser(username);
         if (user == null || !user.password().equals(password)) {
             throw new RuntimeException("Invalid username or password");
         }
         AuthData authData = authDAO.createAuth(new AuthData("Token", username));
-        return new LoginReturn(user.username(), authData.authToken());
+        return new LoginResult(user.username(), authData.authToken());
     }
 
     public void logout(String authToken) {

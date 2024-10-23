@@ -19,11 +19,15 @@ public class Main {
         UserService userService = new UserService(userDAO, authDAO);
 
         // Pass UserService to Server
-        Server server = new Server(userService);
+        Server server = new Server();
+
+        // Set up handlers with userService
+        server.setUpHandlers(userService);
 
         // Start server
         int port = 8080;
         server.run(port);
     }
 }
+
 
