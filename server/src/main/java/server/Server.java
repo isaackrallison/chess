@@ -14,6 +14,7 @@ public class Server {
         Spark.post("/user", new RegisterHandler(userService));
         Spark.post("/session", new LoginHandler(userService));
         Spark.delete("/db", new ClearHandler(gameService));
+        Spark.delete("/session", new LogoutHandler(userService));
     }
 
     public int run(int desiredPort) {
@@ -29,6 +30,7 @@ public class Server {
         // Pass DAO instances to UserService
         UserService userService = new UserService(userDAO, authDAO);
         GameService gameService = new GameService(gameDAO, authDAO, userDAO);
+
 
         setUpHandlers(userService, gameService);
 

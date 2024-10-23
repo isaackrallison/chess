@@ -36,14 +36,15 @@ public class UserService {
         if (user == null || !user.password().equals(password)) {
             throw new UnauthorizedException("Error: unauthorized");
         }
-        AuthData authData = authDAO.createAuth(new AuthData("Token", username));
+
+        AuthData authData = authDAO.createAuth(new AuthData(generateToken(), username));
         return new LoginResult(user.username(), authData.authToken());
     }
 
     public void logout(String authToken) {
         AuthData authData = authDAO.getAuthToken(authToken);
         if (authData == null) {
-            throw new RuntimeException("Invalid authentication token");
+            throw new UnauthorizedException("Error: unauthorized");
         }
         authDAO.deleteAuthToken(authToken);
     }
