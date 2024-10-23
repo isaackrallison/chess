@@ -1,7 +1,6 @@
 package service;
 
-import dataaccess.GameDAO;
-import dataaccess.AuthDAO;
+import dataaccess.*;
 import model.GameData;
 import chess.ChessGame;
 
@@ -10,10 +9,13 @@ import java.util.List;
 public class GameService {
     private final GameDAO gameDAO;
     private final AuthDAO authDAO;
+    private final UserDAO userDAO;
 
-    public GameService(GameDAO gameDAO, AuthDAO authDAO) {
+    public GameService(GameDAO gameDAO, AuthDAO authDAO, UserDAO userDAO) {
         this.gameDAO = gameDAO;
         this.authDAO = authDAO;
+        this.userDAO = userDAO;
+
     }
 
     public GameData createGame(String whiteUsername, String blackUsername, String gameName) {
@@ -32,6 +34,12 @@ public class GameService {
             throw new RuntimeException("Game not found");
         }
         gameDAO.updateGame(playerColor, gameId);
+    }
+
+    public void clearDatabase() {
+        userDAO.clearUsers();
+        authDAO.clearAuths();
+        gameDAO.clearGames();
     }
 }
 

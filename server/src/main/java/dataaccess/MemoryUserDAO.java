@@ -16,6 +16,11 @@ public class MemoryUserDAO implements UserDAO {
     public void createUser(UserData userData) {
         userStorage.put(userData.username(), userData); // Store user data by username
     }
+
+    @Override
+    public void clearUsers () {
+        userStorage.clear();
+    }
 }
 
 

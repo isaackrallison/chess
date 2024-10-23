@@ -48,7 +48,7 @@ public class RegisterHandler implements Route {
         } catch (Exception e) {
             // Handle any other unexpected errors
             res.status(500);
-            return gson.toJson(new ErrorResponse("Error: unexpected server error"));
+            return gson.toJson(new ErrorResponse("Error: " + e));
         }
     }
 }
