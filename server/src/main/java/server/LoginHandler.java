@@ -1,6 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
+import dataaccess.UnauthorizedException;
 import model.LoginRequest;
 import model.LoginResult;
 import model.ErrorResponse;
@@ -35,10 +37,12 @@ public class LoginHandler implements Route {
 
             // Return the LoginResult serialized as JSON
             return gson.toJson(result);
-        } catch (Exception e) {
-            // Handle errors and return a meaningful response
-            res.status(400); // Bad request
+        } catch (UnauthorizedException e) {
+            res.status(401);
             return gson.toJson(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            res.status(500);
+            return gson.toJson(new ErrorResponse("Error: " + e));
         }
     }
 }

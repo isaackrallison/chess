@@ -1,12 +1,11 @@
 package service;
 
-import dataaccess.AuthDAO;
-import dataaccess.UserDAO;
+import dataaccess.*;
 import model.AuthData;
 import model.RegisterResult;
 import model.UserData;
 import model.LoginResult;
-import dataaccess.ExistsException;
+
 import static service.AuthTokenCreator.generateToken;
 
 public class UserService {
@@ -35,7 +34,7 @@ public class UserService {
     public LoginResult login(String username, String password) {
         UserData user = userDAO.getUser(username);
         if (user == null || !user.password().equals(password)) {
-            throw new RuntimeException("Invalid username or password");
+            throw new UnauthorizedException("Error: unauthorized");
         }
         AuthData authData = authDAO.createAuth(new AuthData("Token", username));
         return new LoginResult(user.username(), authData.authToken());
