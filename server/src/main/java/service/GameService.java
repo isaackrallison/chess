@@ -13,13 +13,13 @@ public class GameService {
     private final GameDAO gameDAO;
     private final AuthDAO authDAO;
     private final UserDAO userDAO;
-    private int GameIdNum;
+    private int gameIdNum;
 
     public GameService(GameDAO gameDAO, AuthDAO authDAO, UserDAO userDAO) {
         this.gameDAO = gameDAO;
         this.authDAO = authDAO;
         this.userDAO = userDAO;
-        this.GameIdNum = 0;
+        this.gameIdNum = 0;
 
 
     }
@@ -29,9 +29,9 @@ public class GameService {
             throw new UnauthorizedException("Error: unauthorized");
         }
         ChessGame newGame = new ChessGame();
-        GameIdNum++;
-        gameDAO.createGame(GameIdNum, newGame, gameName);
-        return GameIdNum;
+        gameIdNum++;
+        gameDAO.createGame(gameIdNum, newGame, gameName);
+        return gameIdNum;
     }
 
     public List<GameData> listGames(String authToken) {

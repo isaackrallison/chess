@@ -76,7 +76,7 @@ public class ChessGame {
 
         Collection<ChessMove> moves = piece.pieceMoves(getBoard(), startPosition);
         Iterator<ChessMove> iterator = moves.iterator();
-        Collection<ChessMove> valid_moves = new ArrayList<>();
+        Collection<ChessMove> validMoves = new ArrayList<>();
         TeamColor myColor = piece.getTeamColor();
 
         while (iterator.hasNext()) {
@@ -88,7 +88,7 @@ public class ChessGame {
             try {
                 makeMove(move);
                 if (!isInCheck(myColor)) {
-                    valid_moves.add(move);
+                    validMoves.add(move);
                 }
             } catch (InvalidMoveException e) {
                 continue;
@@ -106,7 +106,7 @@ public class ChessGame {
                 setTeamTurn(TeamColor.BLACK);
             }
         }
-        return valid_moves;
+        return validMoves;
     }
 
 
@@ -127,7 +127,7 @@ public class ChessGame {
         }
 
         if (board.getPiece(move.getStartPosition()).getTeamColor() != getTeamTurn())
-            throw new InvalidMoveException("Out of Turn");
+            {throw new InvalidMoveException("Out of Turn");}
 
         ChessPiece promo = board.getPiece(move.getStartPosition());
         if (move.getPromotionPiece() != null) {
@@ -297,8 +297,8 @@ public class ChessGame {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {return true;}
+        if (o == null || getClass() != o.getClass()) {return false;}
         ChessGame chessGame = (ChessGame) o;
         return Objects.equals(board, chessGame.board);
     }

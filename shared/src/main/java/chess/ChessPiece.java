@@ -55,27 +55,27 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         if (board.getPiece(myPosition).getPieceType() == PieceType.BISHOP){
-            return bishop_moves(board, myPosition);
+            return BishopMoves(board, myPosition);
         }else if (board.getPiece(myPosition).getPieceType() == PieceType.ROOK) {
-            return rook_moves(board, myPosition);
+            return RookMoves(board, myPosition);
         }else if (board.getPiece(myPosition).getPieceType() == PieceType.QUEEN) {
-            return queen_moves(board, myPosition);
+            return queenMoves(board, myPosition);
         }else if (board.getPiece(myPosition).getPieceType() == PieceType.KING) {
-            return king_moves(board, myPosition);
+            return kingMoves(board, myPosition);
         }else if (board.getPiece(myPosition).getPieceType() == PieceType.KNIGHT) {
-            return knight_moves(board, myPosition);
+            return knightMoves(board, myPosition);
         }else if (board.getPiece(myPosition).getPieceType() == PieceType.PAWN) {
-            return pawn_moves(board, myPosition);
+            return pawnMoves(board, myPosition);
         }
         return new ArrayList<>();
     }
 
-    private boolean within_board(int x, int y){
+    private boolean withinBoard(int x, int y){
         return x > 0 && x <= 8 && y > 0 && y <= 8;
     }
 
-    private Collection<ChessMove> inf_moves( int[][] directions, ChessBoard board, ChessPosition myPosition) {
-        ArrayList<ChessMove> poss_moves = new ArrayList<>();
+    private Collection<ChessMove> infMoves( int[][] directions, ChessBoard board, ChessPosition myPosition) {
+        ArrayList<ChessMove> possMoves = new ArrayList<>();
 
         int x = myPosition.getRow();
         int y = myPosition.getColumn();
@@ -83,34 +83,34 @@ public class ChessPiece {
         for (int[] direction: directions) {
             int dx = direction[0];
             int dy = direction[1];
-            int new_x = x + dx;
-            int new_y = y + dy;
+            int newX = x + dx;
+            int newY = y + dy;
 
-            while (within_board(new_x,new_y)) {
-                ChessPosition new_position = new ChessPosition(new_x,new_y);
-                ChessMove new_move = new ChessMove(myPosition, new_position, null);
+            while (withinBoard(newX,newY)) {
+                ChessPosition newPosition = new ChessPosition(newX,newY);
+                ChessMove newMove = new ChessMove(myPosition, newPosition, null);
 
-                if (board.getPiece(new_position) == null) {
-                    poss_moves.add(new_move);
-                } else if (board.getPiece(new_position).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                    poss_moves.add(new_move);
+                if (board.getPiece(newPosition) == null) {
+                    possMoves.add(newMove);
+                } else if (board.getPiece(newPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                    possMoves.add(newMove);
                     break;
                 } else {
                     break;
                 }
 
-                new_x = new_x + dx;
-                new_y = new_y + dy;
+                newX = newX + dx;
+                newY = newY + dy;
             }
 
         }
 
 
-        return poss_moves;
+        return possMoves;
     }
 
-    private Collection<ChessMove> non_inf_moves( int[][] directions, ChessBoard board, ChessPosition myPosition) {
-        ArrayList<ChessMove> poss_moves = new ArrayList<>();
+    private Collection<ChessMove> nonInfMoves( int[][] directions, ChessBoard board, ChessPosition myPosition) {
+        ArrayList<ChessMove> possMoves = new ArrayList<>();
 
         int x = myPosition.getRow();
         int y = myPosition.getColumn();
@@ -118,25 +118,25 @@ public class ChessPiece {
         for (int[] direction: directions) {
             int dx = direction[0];
             int dy = direction[1];
-            int new_x = x + dx;
-            int new_y = y + dy;
+            int newX = x + dx;
+            int newY = y + dy;
 
-            if (within_board(new_x,new_y)) {
-                ChessPosition new_position = new ChessPosition(new_x,new_y);
-                ChessMove new_move = new ChessMove(myPosition, new_position, null);
+            if (withinBoard(newX,newY)) {
+                ChessPosition newPosition = new ChessPosition(newX,newY);
+                ChessMove newMove = new ChessMove(myPosition, newPosition, null);
 
-                if (board.getPiece(new_position) == null) {
-                    poss_moves.add(new_move);
-                } else if (board.getPiece(new_position).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                    poss_moves.add(new_move);
+                if (board.getPiece(newPosition) == null) {
+                    possMoves.add(newMove);
+                } else if (board.getPiece(newPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                    possMoves.add(newMove);
                 }
             }
         }
 
-        return poss_moves;
+        return possMoves;
     }
 
-    private Collection<ChessMove> bishop_moves(ChessBoard board, ChessPosition myPosition) {
+    private Collection<ChessMove> BishopMoves(ChessBoard board, ChessPosition myPosition) {
 
         int[][] directions = {
                 {1, 1},
@@ -145,11 +145,11 @@ public class ChessPiece {
                 {-1, -1}
         };
 
-        return inf_moves(directions, board, myPosition);
+        return infMoves(directions, board, myPosition);
     }
 
 
-    private Collection<ChessMove> rook_moves(ChessBoard board, ChessPosition myPosition) {
+    private Collection<ChessMove> RookMoves(ChessBoard board, ChessPosition myPosition) {
 
         int[][] directions = {
                 {1, 0},
@@ -158,11 +158,11 @@ public class ChessPiece {
                 {0, 1}
         };
 
-        return inf_moves(directions,board, myPosition);
+        return infMoves(directions,board, myPosition);
     }
 
 
-    private Collection<ChessMove> queen_moves(ChessBoard board, ChessPosition myPosition) {
+    private Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition) {
 
         int[][] directions = {
                 {1, 0},
@@ -175,10 +175,10 @@ public class ChessPiece {
                 {-1, -1}
         };
 
-        return inf_moves(directions, board, myPosition);
+        return infMoves(directions, board, myPosition);
     }
 
-    private Collection<ChessMove> king_moves(ChessBoard board, ChessPosition myPosition) {
+    private Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
 
         int[][] directions = {
                 {1, 0},
@@ -191,11 +191,11 @@ public class ChessPiece {
                 {-1, -1}
         };
 
-        return non_inf_moves(directions, board, myPosition);
+        return nonInfMoves(directions, board, myPosition);
     }
 
 
-    private Collection<ChessMove> knight_moves(ChessBoard board, ChessPosition myPosition) {
+    private Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
 
         int[][] directions = {
                 {2, 1},
@@ -208,58 +208,58 @@ public class ChessPiece {
                 {-1, -2}
         };
 
-        return non_inf_moves(directions, board, myPosition);
+        return nonInfMoves(directions, board, myPosition);
     }
 
 
-    private void promotion(ChessPosition myPosition, ChessPosition new_position, ArrayList<ChessMove> poss_moves) {
-        poss_moves.add(new ChessMove(myPosition, new_position, PieceType.QUEEN));
-        poss_moves.add(new ChessMove(myPosition, new_position, PieceType.ROOK));
-        poss_moves.add(new ChessMove(myPosition, new_position, PieceType.BISHOP));
-        poss_moves.add(new ChessMove(myPosition, new_position, PieceType.KNIGHT));
+    private void promotion(ChessPosition myPosition, ChessPosition newPosition, ArrayList<ChessMove> possMoves) {
+        possMoves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
+        possMoves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
+        possMoves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
+        possMoves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
     }
 
 
-    private Collection<ChessMove> pawn_moves(ChessBoard board, ChessPosition myPosition) {
-        ArrayList<ChessMove> poss_moves = new ArrayList<>();
+    private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
+        ArrayList<ChessMove> possMoves = new ArrayList<>();
 
         int x = myPosition.getRow();
         int y = myPosition.getColumn();
 
         int[][] directions = {};
-        int[][] white_pawn_directions = { {1,0} };
-        int[][] black_pawn_directions = { {-1,0} };
+        int[][] whitePawnDirections = { {1,0} };
+        int[][] blackPawnDirections = { {-1,0} };
 
         if (board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE) {
-            directions = white_pawn_directions;
+            directions = whitePawnDirections;
         } else {
-            directions = black_pawn_directions;
+            directions = blackPawnDirections;
         }
 
         for (int[] direction: directions) {
             int dx = direction[0];
             int dy = direction[1];
-            int new_x = x + dx;
-            int new_y = y + dy;
+            int newX = x + dx;
+            int newY = y + dy;
 
-            if (within_board(new_x,new_y)) {
-                ChessPosition new_position = new ChessPosition(new_x,new_y);
-                ChessMove new_move = new ChessMove(myPosition, new_position, null);
+            if (withinBoard(newX,newY)) {
+                ChessPosition newPosition = new ChessPosition(newX,newY);
+                ChessMove newMove = new ChessMove(myPosition, newPosition, null);
 
-                if (new_x == 8 || new_x == 1){
-                    promotion(myPosition, new_position, poss_moves);
+                if (newX == 8 || newX == 1){
+                    promotion(myPosition, newPosition, possMoves);
                     break;
                 }
 
-                if (board.getPiece(new_position) == null) {
-                    poss_moves.add(new_move);
+                if (board.getPiece(newPosition) == null) {
+                    possMoves.add(newMove);
                     if (x == 2 && board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE &&
                             board.getPiece(new ChessPosition(4, y)) == null) {
-                        poss_moves.add(new ChessMove(myPosition, new ChessPosition(4, y), null));
+                        possMoves.add(new ChessMove(myPosition, new ChessPosition(4, y), null));
                         break;
                     } if (x == 7 && board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.BLACK &&
                             board.getPiece(new ChessPosition(5, y)) == null) {
-                        poss_moves.add(new ChessMove(myPosition, new ChessPosition(5, y), null));
+                        possMoves.add(new ChessMove(myPosition, new ChessPosition(5, y), null));
                         break;
                     }
                 } else {
@@ -270,39 +270,39 @@ public class ChessPiece {
         }
 
         int[][] take_directions = {};
-        int[][] white_pawn_take_directions = { {1,1}, {1,-1} };
-        int[][] black_pawn_take_directions = { {-1,1}, {-1,-1} };
+        int[][] whitePawnTakeDirections = { {1,1}, {1,-1} };
+        int[][] blackPawnTakeDirections = { {-1,1}, {-1,-1} };
 
         if (board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE) {
-            take_directions = white_pawn_take_directions;
+            take_directions = whitePawnTakeDirections;
         } else {
-            take_directions = black_pawn_take_directions;
+            take_directions = blackPawnTakeDirections;
         }
 
         for (int[] direction: take_directions) {
             int dx = direction[0];
             int dy = direction[1];
-            int new_x = x + dx;
-            int new_y = y + dy;
+            int newX = x + dx;
+            int newY = y + dy;
 
-            if (within_board(new_x, new_y)) {
-                ChessPosition new_position = new ChessPosition(new_x, new_y);
-                ChessMove new_move = new ChessMove(myPosition, new_position, null);
+            if (withinBoard(newX, newY)) {
+                ChessPosition newPosition = new ChessPosition(newX, newY);
+                ChessMove newMove = new ChessMove(myPosition, newPosition, null);
 
-                if (board.getPiece(new_position) == null) {
+                if (board.getPiece(newPosition) == null) {
                     continue;
                 }
 
-                if (board.getPiece(new_position).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                    if (new_x == 8 || new_x == 1){
-                        promotion(myPosition, new_position, poss_moves);
+                if (board.getPiece(newPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                    if (newX == 8 || newX == 1){
+                        promotion(myPosition, newPosition, possMoves);
                         break;
                     }
-                    poss_moves.add(new_move);
+                    possMoves.add(newMove);
                 }
             }
         }
-        return poss_moves;
+        return possMoves;
     }
 
     @Override
