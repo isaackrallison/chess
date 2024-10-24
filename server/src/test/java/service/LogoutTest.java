@@ -1,9 +1,7 @@
 package service;
 
-import model.AuthData;
 import model.LoginResult;
 import model.UserData;
-import service.UserService;
 import dataaccess.UserDAO;
 import dataaccess.AuthDAO;
 import dataaccess.MemoryUserDAO;

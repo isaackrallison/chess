@@ -2,7 +2,6 @@ package service;
 
 import model.AuthData;
 import model.UserData;
-import service.UserService;
 import model.RegisterResult;
 import dataaccess.UserDAO;
 import dataaccess.AuthDAO;
@@ -50,7 +49,7 @@ public class RegisterTest {
 
         AuthData authData = authDAO.getAuthToken(result.authToken());
         assertNotNull(authData);
-        assertEquals(username, authData.Username());
+        assertEquals(username, authData.username());
     }
 
     @Test

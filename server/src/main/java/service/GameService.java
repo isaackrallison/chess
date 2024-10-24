@@ -55,7 +55,7 @@ public class GameService {
 
         // If all checks pass, update the game with the new player
         AuthData data = authDAO.getAuthToken(authToken);
-        String username = data.Username();
+        String username = data.username();
         gameDAO.updateGame(playerColor, gameId, username);
     }
 
