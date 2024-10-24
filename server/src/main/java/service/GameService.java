@@ -1,9 +1,11 @@
 package service;
 
 import dataaccess.*;
+import model.AuthData;
 import model.GameData;
 import dataaccess.UnauthorizedException;
 import chess.ChessGame;
+import model.UserData;
 
 import java.util.List;
 
@@ -28,24 +30,35 @@ public class GameService {
         }
         ChessGame newGame = new ChessGame();
         GameIdNum++;
-        gameDAO.createGame(GameIdNum, newGame);
+        gameDAO.createGame(GameIdNum, newGame, gameName);
         return GameIdNum;
     }
 
-    public List<ChessGame> listGames(String authToken) {
+    public List<GameData> listGames(String authToken) {
         if (!authDAO.validateAuth(authToken)) {
             throw new UnauthorizedException("Error: unauthorized");
         }
         return gameDAO.getAllGames();
     }
 
-    public void joinGame(int gameId, String playerColor) {
+    public void joinGame(int gameId, String playerColor, String authToken) {
+        // Validate the auth token
+        if (!authDAO.validateAuth(authToken)) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+
+        // Find the game by ID
         ChessGame game = gameDAO.findGameById(gameId);
         if (game == null) {
-            throw new RuntimeException("Game not found");
+            throw new BadRequestException("Error: bad request");
         }
-        gameDAO.updateGame(playerColor, gameId);
+
+        // If all checks pass, update the game with the new player
+        AuthData data = authDAO.getAuthToken(authToken);
+        String username = data.Username();
+        gameDAO.updateGame(playerColor, gameId, username);
     }
+
 
     public void clearDatabase() {
         userDAO.clearUsers();

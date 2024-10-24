@@ -4,6 +4,7 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import dataaccess.GameDAO;
 import dataaccess.AuthDAO;
+import model.GameData;
 import dataaccess.UnauthorizedException;
 import service.GameService;
 import model.ErrorResponse;
@@ -34,7 +35,7 @@ public class ListGamesHandler implements Route {
                 throw new UnauthorizedException("Error: unauthorized");
             }
 
-            List<ChessGame> games = gameService.listGames(authToken);
+            List<GameData> games = gameService.listGames(authToken);
 
             // Set response type and status
             res.type("application/json");
