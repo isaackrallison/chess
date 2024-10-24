@@ -1,1 +1,36 @@
+package service;
+
+import model.GameData;
+import chess.ChessGame;
+import dataaccess.MemoryGameDAO;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+public class CreateGameTest {
+
+    private final MemoryGameDAO gameDAO = new MemoryGameDAO();
+
+    @Test
+    public void testCreateGame() {
+        // Arrange
+        int gameIdNum = 1;
+        ChessGame chessGame = new ChessGame(); // Assuming you have a constructor
+        String gameName = "Test Game";
+
+        // Act
+        gameDAO.createGame(gameIdNum, chessGame, gameName);
+
+        // Assert
+        List<GameData> games = gameDAO.getAllGames();
+        Assertions.assertEquals(1, games.size(), "Game list should contain one game");
+
+        GameData createdGame = games.get(0);
+        Assertions.assertEquals(gameIdNum, createdGame.gameID(), "Game ID should match");
+        Assertions.assertEquals(gameName, createdGame.gameName(), "Game name should match");
+        Assertions.assertNull(createdGame.whiteUsername(), "White username should be null initially");
+        Assertions.assertNull(createdGame.blackUsername(), "Black username should be null initially");
+    }
+}
 
