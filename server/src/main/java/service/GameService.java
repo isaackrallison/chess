@@ -32,7 +32,10 @@ public class GameService {
         return GameIdNum;
     }
 
-    public List<ChessGame> listGames() {
+    public List<ChessGame> listGames(String authToken) {
+        if (!authDAO.validateAuth(authToken)) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
         return gameDAO.getAllGames();
     }
 

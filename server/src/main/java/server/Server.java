@@ -17,6 +17,7 @@ public class Server {
         Spark.delete("/db", new ClearHandler(gameService));
         Spark.delete("/session", new LogoutHandler(userService));
         Spark.post("/game", new CreateGameHandler(gameService));
+        Spark.get("/game", new ListGamesHandler(gameService));
     }
 
     public int run(int desiredPort) {
