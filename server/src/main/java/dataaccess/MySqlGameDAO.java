@@ -27,8 +27,10 @@ public class MySqlGameDAO implements GameDAO {
             while (rs.next()) {
                 int gameId = rs.getInt("game_id");
                 String gameName = rs.getString("game_name");
-                ChessGame game = ChessGameAdapter.deserialize(rs.getString("game_data")); // Deserialize here
-                GameData gameData = new GameData(gameId, null, null, gameName, game);
+                ChessGame game = ChessGameAdapter.deserialize(rs.getString("game_data"));
+                String whiteUsername = rs.getString("white_username");
+                String blackUsername = rs.getString("black_username");
+                GameData gameData = new GameData(gameId, whiteUsername, blackUsername, gameName, game);
                 games.add(gameData);
             }
         } catch (SQLException e) {
@@ -80,6 +82,19 @@ public class MySqlGameDAO implements GameDAO {
 
         try (var conn = DatabaseManager.getConnection();
              var pstmt = conn.prepareStatement(sql)) {
+
+            // Check if the username already exists for the specified color
+            String checkSql = "SELECT " + (playerColor.equalsIgnoreCase("WHITE") ? "white_username" : "black_username") +
+                    " FROM games WHERE game_id = ?";
+            try (var checkStmt = conn.prepareStatement(checkSql)) {
+                checkStmt.setInt(1, gameId);
+                try (var rs = checkStmt.executeQuery()) {
+                    if (rs.next() && rs.getString(1) != null) {
+                        throw new IllegalStateException("Error: color already taken");
+                    }
+                }
+            }
+
             pstmt.setString(1, username);
             pstmt.setInt(2, gameId);
             pstmt.executeUpdate();
@@ -87,6 +102,7 @@ public class MySqlGameDAO implements GameDAO {
             throw new DataAccessException("Unable to update game: " + e.getMessage());
         }
     }
+
 
     @Override
     public void clearGames() throws DataAccessException {
