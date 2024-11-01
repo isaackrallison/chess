@@ -39,7 +39,7 @@ public class RegisterTest {
             assertNotNull(result.authToken());
 
             // Verify user and auth token were created
-            UserData createdUser = userDAO.getUser(username);
+            UserData createdUser = userDAO.getUser(username,password);
             assertNotNull(createdUser);
             assertEquals(username, createdUser.username());
             assertEquals(password, createdUser.password());

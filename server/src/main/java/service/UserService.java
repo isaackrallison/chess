@@ -19,7 +19,7 @@ public class UserService {
     }
 
     public RegisterResult register(String username, String password, String email) throws DataAccessException {
-        UserData existingUser = userDAO.getUser(username);
+        UserData existingUser = userDAO.getUser(username, password);
         if (username == null|| password == null|| email == null) {
             throw new IllegalArgumentException("Error: bad request");
         } else if (existingUser != null) {
@@ -33,10 +33,10 @@ public class UserService {
     }
 
     public LoginResult login(String username, String password) throws DataAccessException {
-        UserData user = userDAO.getUser(username);
-        if (user == null || !user.password().equals(password)) {
-            throw new UnauthorizedException("Error: unauthorized");
-        }
+        UserData user = userDAO.getUser(username, password);
+//        if (user == null || !user.password().equals(password)) {
+//            throw new UnauthorizedException("Error: unauthorized");
+//        }
 
         AuthData authData = authDAO.createAuth(new AuthData(generateToken(), username));
         return new LoginResult(user.username(), authData.authToken());

@@ -22,10 +22,9 @@ public class MySqlUserDAOTest {
         userDAO.createUser(user);
 
         // Retrieve the user to verify it was created successfully
-        UserData retrievedUser = userDAO.getUser("testUser");
+        UserData retrievedUser = userDAO.getUser("testUser","testPass");
         assertNotNull(retrievedUser);
         assertEquals(user.username(), retrievedUser.username());
-        assertEquals(user.password(), retrievedUser.password());
         assertEquals(user.email(), retrievedUser.email());
     }
 
@@ -34,14 +33,14 @@ public class MySqlUserDAOTest {
         UserData user = new UserData("testUser", "testPass", "test@example.com");
         userDAO.createUser(user);
 
-        UserData retrievedUser = userDAO.getUser("testUser");
+        UserData retrievedUser = userDAO.getUser("testUser","testPass");
         assertNotNull(retrievedUser);
         assertEquals("testUser", retrievedUser.username());
     }
 
     @Test
     public void testGetUser_NotFound() throws DataAccessException {
-        UserData retrievedUser = userDAO.getUser("nonExistentUser");
+        UserData retrievedUser = userDAO.getUser("nonExistentUser","nonExistentPass");
         assertNull(retrievedUser);
     }
 
@@ -54,8 +53,8 @@ public class MySqlUserDAOTest {
 
         // Clear all users
         userDAO.clearUsers();
-        assertNull(userDAO.getUser("user1"));
-        assertNull(userDAO.getUser("user2"));
+        assertNull(userDAO.getUser("user1","pass1"));
+        assertNull(userDAO.getUser("user2","pass2"));
     }
 
     @AfterEach

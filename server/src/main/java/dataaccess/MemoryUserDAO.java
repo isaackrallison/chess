@@ -8,7 +8,7 @@ public class MemoryUserDAO implements UserDAO {
     private final Map<String, UserData> userStorage = new HashMap<>();
 
     @Override
-    public UserData getUser(String username) {
+    public UserData getUser(String username,String password) {
         return userStorage.get(username); // Retrieve the user by username
     }
 
