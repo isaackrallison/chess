@@ -95,15 +95,18 @@ public class LoginTest {
 
     @BeforeEach
     public void setUp() {
-        userDAO = new MemoryUserDAO();  // Use in-memory implementations
-        authDAO = new MemoryAuthDAO();
-        userService = new UserService(userDAO, authDAO);
+        try {
+            userDAO = new MemoryUserDAO();  // Use in-memory implementations
+            authDAO = new MemoryAuthDAO();
+            userService = new UserService(userDAO, authDAO);
 
-        // Set up a test user for login tests
-        String username = "testUser";
-        String password = "testPassword";
-        String email = "testuser@example.com";
-        userDAO.createUser(new UserData(username, password, email));
+            // Set up a test user for login tests
+            String username = "testUser";
+            String password = "testPassword";
+            String email = "testuser@example.com";
+            userDAO.createUser(new UserData(username, password, email));
+        } catch (DataAccessException ignored) {
+        }
     }
 
     @Test

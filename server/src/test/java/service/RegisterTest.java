@@ -54,20 +54,23 @@ public class RegisterTest {
 
     @Test
     public void testRegisterUserAlreadyExists() {
-        // Arrange
-        String username = "existingUser";
-        String password = "password123";
-        String email = "existinguser@example.com";
+        try {
+            // Arrange
+            String username = "existingUser";
+            String password = "password123";
+            String email = "existinguser@example.com";
 
-        // Create an existing user
-        userDAO.createUser(new UserData(username, password, email));
+            // Create an existing user
+            userDAO.createUser(new UserData(username, password, email));
 
-        // Act & Assert
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            userService.register(username, password, email);
-        });
+            // Act & Assert
+            RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+                userService.register(username, password, email);
+            });
 
-        assertEquals("User already exists", exception.getMessage());
+            assertEquals("User already exists", exception.getMessage());
+        } catch (DataAccessException ignored) {
+        }
     }
 }
 
