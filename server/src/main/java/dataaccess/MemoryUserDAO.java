@@ -1,5 +1,6 @@
 package dataaccess;
 
+import dataaccess.exceptions.UnauthorizedException;
 import model.UserData;
 import java.util.HashMap;
 import java.util.Map;

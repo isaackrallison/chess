@@ -4,8 +4,6 @@ import chess.ChessBoard;
 import chess.ChessPiece;
 import com.google.gson.*;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ChessBoardAdapter implements JsonSerializer<ChessBoard>, JsonDeserializer<ChessBoard> {
 
@@ -27,7 +25,7 @@ public class ChessBoardAdapter implements JsonSerializer<ChessBoard>, JsonDeseri
             jsonBoard.add(jsonRow);
         }
 
-        return jsonBoard; // Return the entire board as a JSON array
+        return jsonBoard;
     }
 
     @Override

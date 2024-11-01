@@ -1,12 +1,13 @@
 package service;
 
 import dataaccess.*;
+import dataaccess.exceptions.ExistsException;
+import dataaccess.exceptions.UnauthorizedException;
 import model.AuthData;
 import model.RegisterResult;
 import model.UserData;
 import model.LoginResult;
-import dataaccess.DataAccessException;
-import dataaccess.MySqlUserDAO;
+import dataaccess.exceptions.DataAccessException;
 
 import static service.AuthTokenCreator.generateToken;
 
@@ -34,22 +35,14 @@ public class UserService {
     }
 
     public LoginResult login(String username, String password) throws DataAccessException {
-//        try {
             if (!userDAO.verifyUser(username, password)) {
                 throw new UnauthorizedException("Unauthorized");
             }
-//            if (username == "" && password == "") {
-//                throw new UnauthorizedException("Unauthorized");
-//            }
             UserData user = userDAO.getUser(username, password);
 
             AuthData authData = authDAO.createAuth(new AuthData(generateToken(), username));
             return new LoginResult(user.username(), authData.authToken());
         }
-//        catch (Exception e) {
-//            throw new UnauthorizedException("Unauthroized");
-//        }
-//    }
 
     public void logout(String authToken) throws DataAccessException {
             if (!authDAO.validateAuth(authToken)) {

@@ -1,15 +1,11 @@
 package dataaccess;
 
-import chess.ChessBoard;
 import chess.ChessGame;
-import chess.ChessPiece;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import dataaccess.exceptions.DataAccessException;
 import model.GameData;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import dataaccess.ChessGameAdapter;
 
 public class MySqlGameDAO implements GameDAO {
     public MySqlGameDAO() throws DataAccessException {

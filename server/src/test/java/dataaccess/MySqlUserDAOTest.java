@@ -1,8 +1,8 @@
 package dataaccess;
 
+import dataaccess.exceptions.DataAccessException;
 import model.UserData;
 import org.junit.jupiter.api.*;
-import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,7 +39,7 @@ public class MySqlUserDAOTest {
     }
 
     @Test
-    public void testGetUser_NotFound() throws DataAccessException {
+    public void testGetUserNotFound() throws DataAccessException {
         UserData retrievedUser = userDAO.getUser("nonExistentUser","nonExistentPass");
         assertNull(retrievedUser);
     }

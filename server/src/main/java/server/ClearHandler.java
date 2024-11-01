@@ -1,17 +1,13 @@
 package server;
 
-import dataaccess.DataAccessException;
+import dataaccess.exceptions.DataAccessException;
 import model.ErrorResponse;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import service.UserService;
 import service.GameService;
-import service.AuthService;
 import com.google.gson.Gson;
 
-import java.util.HashSet;
-import java.util.Set;
 
 public class ClearHandler implements Route {
     private final GameService gameService;

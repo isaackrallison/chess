@@ -1,7 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
+import dataaccess.exceptions.DataAccessException;
 import model.RegisterRequest;
 import model.RegisterResult;
 import service.UserService;
@@ -9,7 +9,7 @@ import model.ErrorResponse;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import dataaccess.ExistsException;
+import dataaccess.exceptions.ExistsException;
 
 public class RegisterHandler implements Route {
     private final UserService userService;

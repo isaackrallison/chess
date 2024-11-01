@@ -1,15 +1,11 @@
 package server;
 
-import chess.ChessGame;
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
-import dataaccess.GameDAO;
-import dataaccess.AuthDAO;
+import dataaccess.exceptions.DataAccessException;
 import model.GameData;
-import dataaccess.UnauthorizedException;
+import dataaccess.exceptions.UnauthorizedException;
 import service.GameService;
 import model.ErrorResponse;
-import service.UserService;
 import spark.Request;
 import spark.Response;
 import spark.Route;

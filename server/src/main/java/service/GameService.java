@@ -1,11 +1,12 @@
 package service;
 
 import dataaccess.*;
+import dataaccess.exceptions.BadRequestException;
+import dataaccess.exceptions.DataAccessException;
 import model.AuthData;
 import model.GameData;
-import dataaccess.UnauthorizedException;
+import dataaccess.exceptions.UnauthorizedException;
 import chess.ChessGame;
-import model.UserData;
 
 import java.util.List;
 

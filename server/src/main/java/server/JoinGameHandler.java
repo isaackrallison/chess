@@ -1,9 +1,9 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.BadRequestException;
-import dataaccess.DataAccessException;
-import dataaccess.UnauthorizedException;
+import dataaccess.exceptions.BadRequestException;
+import dataaccess.exceptions.DataAccessException;
+import dataaccess.exceptions.UnauthorizedException;
 import model.JoinGameRequest;
 import model.ErrorResponse;
 import service.GameService;

@@ -1,4 +1,5 @@
 package dataaccess;
+import dataaccess.exceptions.DataAccessException;
 import model.AuthData;
 import java.sql.*;
 
@@ -57,8 +58,8 @@ public class MySqlAuthDAO implements AuthDAO {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement)) {
                 for (int i = 0; i < params.length; i++) {
-                    if (params[i] instanceof String param) ps.setString(i + 1, param);
-                    else if (params[i] == null) ps.setNull(i + 1, NULL);
+                    if (params[i] instanceof String param) {ps.setString(i + 1, param);}
+                    else if (params[i] == null) {ps.setNull(i + 1, NULL);}
                 }
                 ps.executeUpdate();
             }

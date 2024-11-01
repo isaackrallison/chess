@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.*;
+import dataaccess.exceptions.DataAccessException;
 import model.AuthData;
 import model.UserData;
 import model.RegisterResult;

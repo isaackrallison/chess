@@ -1,6 +1,7 @@
 package server;
 
 import dataaccess.*;
+import dataaccess.exceptions.DataAccessException;
 import service.AuthService;
 import service.GameService;
 import service.UserService;

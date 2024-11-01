@@ -5,7 +5,6 @@ import chess.ChessGame;
 import dataaccess.MemoryGameDAO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import dataaccess.UnauthorizedException;
 
 import java.util.List;
 
@@ -37,24 +36,5 @@ public class CreateGameTest {
         Assertions.assertNull(createdGame.whiteUsername(), "White username should be null initially");
         Assertions.assertNull(createdGame.blackUsername(), "Black username should be null initially");
     }
-
-//    @Test
-//    public void testCreateGameUnauthorized() {
-//        // Arrange
-//        String invalidAuthToken = "invalidAuthToken"; // No token is set in the authDAO, so it is invalid
-//        String gameName = "Test Game";
-//
-//        // Act & Assert
-//        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> {
-//            gameService.createGame(gameName, invalidAuthToken);
-//        });
-//
-//        // Verify the exception message
-//        assertEquals("Error: unauthorized", exception.getMessage());
-//
-//        // Verify no games were created
-//        List<GameData> games = gameDAO.getAllGames();
-//        assertEquals(0, games.size(), "Game list should be empty since creation failed");
-//    }
 }
 

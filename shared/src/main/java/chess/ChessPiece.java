@@ -55,9 +55,9 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         if (board.getPiece(myPosition).getPieceType() == PieceType.BISHOP){
-            return BishopMoves(board, myPosition);
+            return bishopMoves(board, myPosition);
         }else if (board.getPiece(myPosition).getPieceType() == PieceType.ROOK) {
-            return RookMoves(board, myPosition);
+            return rookMoves(board, myPosition);
         }else if (board.getPiece(myPosition).getPieceType() == PieceType.QUEEN) {
             return queenMoves(board, myPosition);
         }else if (board.getPiece(myPosition).getPieceType() == PieceType.KING) {
@@ -136,7 +136,7 @@ public class ChessPiece {
         return possMoves;
     }
 
-    private Collection<ChessMove> BishopMoves(ChessBoard board, ChessPosition myPosition) {
+    private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
 
         int[][] directions = {
                 {1, 1},
@@ -149,7 +149,7 @@ public class ChessPiece {
     }
 
 
-    private Collection<ChessMove> RookMoves(ChessBoard board, ChessPosition myPosition) {
+    private Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition) {
 
         int[][] directions = {
                 {1, 0},
@@ -269,17 +269,17 @@ public class ChessPiece {
 
         }
 
-        int[][] take_directions = {};
+        int[][] takeDirections = {};
         int[][] whitePawnTakeDirections = { {1,1}, {1,-1} };
         int[][] blackPawnTakeDirections = { {-1,1}, {-1,-1} };
 
         if (board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE) {
-            take_directions = whitePawnTakeDirections;
+            takeDirections = whitePawnTakeDirections;
         } else {
-            take_directions = blackPawnTakeDirections;
+            takeDirections = blackPawnTakeDirections;
         }
 
-        for (int[] direction: take_directions) {
+        for (int[] direction: takeDirections) {
             int dx = direction[0];
             int dy = direction[1];
             int newX = x + dx;
@@ -315,8 +315,8 @@ public class ChessPiece {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {return true;}
+        if (o == null || getClass() != o.getClass()) {return false;}
         ChessPiece that = (ChessPiece) o;
         return pieceColor == that.pieceColor && type == that.type;
     }
