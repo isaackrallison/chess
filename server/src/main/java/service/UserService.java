@@ -34,14 +34,22 @@ public class UserService {
     }
 
     public LoginResult login(String username, String password) throws DataAccessException {
-        if (!userDAO.verifyUser(username,password)) {
-            throw new UnauthorizedException("Error: unauthorized");
-        }
-        UserData user = userDAO.getUser(username, password);
+//        try {
+            if (!userDAO.verifyUser(username, password)) {
+                throw new UnauthorizedException("Unauthorized");
+            }
+//            if (username == "" && password == "") {
+//                throw new UnauthorizedException("Unauthorized");
+//            }
+            UserData user = userDAO.getUser(username, password);
 
-        AuthData authData = authDAO.createAuth(new AuthData(generateToken(), username));
-        return new LoginResult(user.username(), authData.authToken());
-    }
+            AuthData authData = authDAO.createAuth(new AuthData(generateToken(), username));
+            return new LoginResult(user.username(), authData.authToken());
+        }
+//        catch (Exception e) {
+//            throw new UnauthorizedException("Unauthroized");
+//        }
+//    }
 
     public void logout(String authToken) throws DataAccessException {
             if (!authDAO.validateAuth(authToken)) {

@@ -23,7 +23,7 @@ public class MemoryUserDAO implements UserDAO {
     }
 
     @Override
-    public boolean verifyUser(String username, String providedClearTextPassword) throws DataAccessException {
+    public boolean verifyUser(String username, String providedClearTextPassword) throws UnauthorizedException {
         return false;
     }
 }

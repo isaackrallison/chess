@@ -18,8 +18,8 @@ public class LogoutTest {
     @BeforeEach
     public void setUp() {
         try {
-            userDAO = new MemoryUserDAO();  // Use in-memory implementations
-            authDAO = new MemoryAuthDAO();
+            userDAO = new MySqlUserDAO();  // Use in-memory implementations
+            authDAO = new MySqlAuthDAO();
             userService = new UserService(userDAO, authDAO);
 
             // Set up a test user for logout tests
