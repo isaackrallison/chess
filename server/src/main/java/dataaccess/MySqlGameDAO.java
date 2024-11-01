@@ -1,37 +1,29 @@
 package dataaccess;
 
-import chess.ChessGame;
-import model.GameData;
 import chess.ChessBoard;
+import chess.ChessGame;
 import chess.ChessPiece;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import model.GameData;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gson.*;
+import dataaccess.ChessGameAdapter;
 
 public class MySqlGameDAO implements GameDAO {
-    private final Connection connection;
-
     public MySqlGameDAO() throws DataAccessException {
-        try {
-            String url = "jdbc:mysql://localhost:3306/chess"; // Change 'chess' to your database name
-            String user = "root"; // Change as needed
-            String password = "password"; // Change as needed
-            connection = DriverManager.getConnection(url, user, password);
-        } catch (SQLException e) {
-            throw new DataAccessException("Error connecting to the database");
-        }
+        configureDatabase();
     }
 
     @Override
-    public List<GameData> getAllGames() {
+    public List<GameData> getAllGames() throws DataAccessException {
         List<GameData> games = new ArrayList<>();
         String sql = "SELECT * FROM games"; // Ensure you have a 'games' table created in your DB
 
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        try (var conn = DatabaseManager.getConnection();
+             var stmt = conn.createStatement();
+             var rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 int gameId = rs.getInt("game_id");
                 String gameName = rs.getString("game_name");
@@ -40,83 +32,91 @@ public class MySqlGameDAO implements GameDAO {
                 games.add(gameData);
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Handle the exception properly in a production scenario
+            throw new DataAccessException("Unable to retrieve games: " + e.getMessage());
         }
 
         return games;
     }
 
     @Override
-    public void createGame(int gameIdNum, ChessGame game, String gameName) {
+    public void createGame(int gameIdNum, ChessGame game, String gameName) throws DataAccessException {
         String sql = "INSERT INTO games (game_id, game_name, game_data) VALUES (?, ?, ?)";
 
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        try (var conn = DatabaseManager.getConnection();
+             var pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, gameIdNum);
             pstmt.setString(2, gameName);
             pstmt.setString(3, ChessGameAdapter.serialize(game)); // Serialize the game to JSON
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace(); // Handle exception properly
+            throw new DataAccessException("Unable to create game: " + e.getMessage());
         }
     }
 
     @Override
-    public ChessGame findGameById(int gameId) {
+    public ChessGame findGameById(int gameId) throws DataAccessException {
         String sql = "SELECT game_data FROM games WHERE game_id = ?";
         ChessGame game = null;
 
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        try (var conn = DatabaseManager.getConnection();
+             var pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, gameId);
-            try (ResultSet rs = pstmt.executeQuery()) {
+            try (var rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     String gameData = rs.getString("game_data");
                     game = ChessGameAdapter.deserialize(gameData); // Deserialize the JSON string to ChessGame
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Handle exception properly
+            throw new DataAccessException("Unable to find game: " + e.getMessage());
         }
 
         return game;
     }
 
     @Override
-    public void updateGame(String playerColor, int gameId, String username) {
+    public void updateGame(String playerColor, int gameId, String username) throws DataAccessException {
         String sql = "UPDATE games SET " + (playerColor.equalsIgnoreCase("WHITE") ? "white_username" : "black_username") + " = ? WHERE game_id = ?";
 
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        try (var conn = DatabaseManager.getConnection();
+             var pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
             pstmt.setInt(2, gameId);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace(); // Handle exception properly
+            throw new DataAccessException("Unable to update game: " + e.getMessage());
         }
     }
 
     @Override
-    public void clearGames() {
+    public void clearGames() throws DataAccessException {
         String sql = "DELETE FROM games";
 
-        try (Statement stmt = connection.createStatement()) {
+        try (var conn = DatabaseManager.getConnection();
+             var stmt = conn.createStatement()) {
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
-            e.printStackTrace(); // Handle exception properly
+            throw new DataAccessException("Unable to clear games: " + e.getMessage());
         }
     }
 
-    public static class ChessGameAdapter {
+    private void configureDatabase() throws DataAccessException {
+        DatabaseManager.createDatabase();
+        String createStatement = """
+            CREATE TABLE IF NOT EXISTS games (
+              game_id INT PRIMARY KEY,
+              game_name VARCHAR(255) NOT NULL,
+              game_data TEXT NOT NULL,
+              white_username VARCHAR(255),
+              black_username VARCHAR(255)
+            )
+        """;
 
-        private static final Gson gson = new GsonBuilder()
-                .registerTypeAdapter(ChessPiece.class, new ChessPieceAdapter())
-                .registerTypeAdapter(ChessBoard.class, new ChessBoardAdapter())
-                .create();
-
-        public static String serialize(ChessGame game) {
-            return gson.toJson(game);
-        }
-
-        public static ChessGame deserialize(String json) {
-            return gson.fromJson(json, ChessGame.class);
+        try (var conn = DatabaseManager.getConnection();
+             var ps = conn.prepareStatement(createStatement)) {
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException("Unable to configure database: " + e.getMessage());
         }
     }
 }
