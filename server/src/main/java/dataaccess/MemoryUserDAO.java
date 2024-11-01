@@ -21,6 +21,11 @@ public class MemoryUserDAO implements UserDAO {
     public void clearUsers () {
         userStorage.clear();
     }
+
+    @Override
+    public boolean verifyUser(String username, String providedClearTextPassword) throws DataAccessException {
+        return false;
+    }
 }
 
 

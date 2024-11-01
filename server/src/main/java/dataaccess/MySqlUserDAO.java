@@ -161,6 +161,7 @@ public class MySqlUserDAO implements UserDAO {
         }
     }
 
+    @Override
     public boolean verifyUser(String username, String providedClearTextPassword) throws DataAccessException {
         UserData userData = getUser(username, providedClearTextPassword);
         if (userData == null) {

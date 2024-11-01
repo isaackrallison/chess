@@ -6,6 +6,7 @@ import model.RegisterResult;
 import model.UserData;
 import model.LoginResult;
 import dataaccess.DataAccessException;
+import dataaccess.MySqlUserDAO;
 
 import static service.AuthTokenCreator.generateToken;
 
@@ -33,10 +34,10 @@ public class UserService {
     }
 
     public LoginResult login(String username, String password) throws DataAccessException {
+        if (!userDAO.verifyUser(username,password)) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
         UserData user = userDAO.getUser(username, password);
-//        if (user == null || !user.password().equals(password)) {
-//            throw new UnauthorizedException("Error: unauthorized");
-//        }
 
         AuthData authData = authDAO.createAuth(new AuthData(generateToken(), username));
         return new LoginResult(user.username(), authData.authToken());
