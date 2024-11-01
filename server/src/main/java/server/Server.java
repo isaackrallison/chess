@@ -1,8 +1,6 @@
 package server;
 
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 import service.AuthService;
 import service.GameService;
 import service.UserService;
@@ -26,18 +24,23 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
-        // Create DAO instances
-        MemoryUserDAO userDAO = new MemoryUserDAO();
-        MemoryAuthDAO authDAO = new MemoryAuthDAO();
-        MemoryGameDAO gameDAO = new MemoryGameDAO();
+        try {
+            // Create DAO instances
+            MySqlUserDAO userDAO = new MySqlUserDAO();
+            MySqlGameDAO gameDAO = new MySqlGameDAO();
+            MySqlAuthDAO authDAO = new MySqlAuthDAO();
 
-        // Pass DAO instances to UserService
-        UserService userService = new UserService(userDAO, authDAO);
-        GameService gameService = new GameService(gameDAO, authDAO, userDAO);
-        AuthService authService = new AuthService(authDAO, userDAO);
 
+
+
+            // Pass DAO instances to UserService
+            UserService userService = new UserService(userDAO, authDAO);
+            GameService gameService = new GameService(gameDAO, authDAO, userDAO);
+            AuthService authService = new AuthService(authDAO, userDAO);
 
         setUpHandlers(userService, gameService);
+
+        }catch (DataAccessException ignored) {}
 
         // Initialize the server
         Spark.init();
