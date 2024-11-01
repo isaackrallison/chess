@@ -59,7 +59,10 @@ public class JoinGameHandler implements Route {
         } catch (IllegalStateException e) { // Custom exception for already taken
             res.status(403);
             return gson.toJson(new ErrorResponse("Error: already taken"));
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
+            res.status(500);
+            return gson.toJson(new ErrorResponse("Error: Unable to access data. Please try again later."));
+        }catch (Exception e) {
             res.status(500);
             return gson.toJson(new ErrorResponse("Error: " + e.getMessage()));
         }

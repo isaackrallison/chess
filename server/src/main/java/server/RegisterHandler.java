@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 import model.RegisterRequest;
 import model.RegisterResult;
 import service.UserService;
@@ -45,7 +46,10 @@ public class RegisterHandler implements Route {
             // Set response code for bad request (invalid input)
             res.status(400);
             return gson.toJson(new ErrorResponse("Error: bad request"));
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
+            res.status(500);
+            return gson.toJson(new ErrorResponse("Error: Unable to access data. Please try again later."));
+        }catch (Exception e) {
             // Handle any other unexpected errors
             res.status(500);
             return gson.toJson(new ErrorResponse("Error: " + e));

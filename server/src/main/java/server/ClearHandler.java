@@ -1,5 +1,6 @@
 package server;
 
+import dataaccess.DataAccessException;
 import model.ErrorResponse;
 import spark.Request;
 import spark.Response;
@@ -32,7 +33,10 @@ public class ClearHandler implements Route {
 
             // Return an empty JSON object
             return "{}";
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
+            res.status(500);
+            return gson.toJson(new ErrorResponse("Error: Unable to access data. Please try again later."));
+        }catch (Exception e) {
             // Handle any other unexpected errors
             res.status(500);
             return gson.toJson(new ErrorResponse("Error: " + e));

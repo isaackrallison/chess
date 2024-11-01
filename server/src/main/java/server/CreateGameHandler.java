@@ -59,7 +59,10 @@ public class CreateGameHandler implements Route {
         } catch (UnauthorizedException e) {
             res.status(401);
             return gson.toJson(new ErrorResponse("Error: unauthorized"));
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
+            res.status(500);
+            return gson.toJson(new ErrorResponse("Error: Unable to access data. Please try again later."));
+        }catch (Exception e) {
             res.status(500);
             return gson.toJson(new ErrorResponse("Error: " + e.getMessage()));
         }

@@ -5,6 +5,7 @@ import model.AuthData;
 import model.RegisterResult;
 import model.UserData;
 import model.LoginResult;
+import dataaccess.DataAccessException;
 
 import static service.AuthTokenCreator.generateToken;
 
@@ -17,7 +18,7 @@ public class UserService {
         this.authDAO = authDAO;
     }
 
-    public RegisterResult register(String username, String password, String email) {
+    public RegisterResult register(String username, String password, String email) throws DataAccessException {
         UserData existingUser = userDAO.getUser(username);
         if (username == null|| password == null|| email == null) {
             throw new IllegalArgumentException("Error: bad request");
@@ -31,7 +32,7 @@ public class UserService {
         return new RegisterResult(newUser.username(), authData.authToken());
     }
 
-    public LoginResult login(String username, String password) {
+    public LoginResult login(String username, String password) throws DataAccessException {
         UserData user = userDAO.getUser(username);
         if (user == null || !user.password().equals(password)) {
             throw new UnauthorizedException("Error: unauthorized");
@@ -41,12 +42,12 @@ public class UserService {
         return new LoginResult(user.username(), authData.authToken());
     }
 
-    public void logout(String authToken) {
-        if (!authDAO.validateAuth(authToken)) {
-            throw new UnauthorizedException("Error: unauthorized");
-        }
-        AuthData authData = authDAO.getAuthToken(authToken);
-        authDAO.deleteAuthToken(authToken);
+    public void logout(String authToken) throws DataAccessException {
+            if (!authDAO.validateAuth(authToken)) {
+                throw new UnauthorizedException("Error: unauthorized");
+            }
+            AuthData authData = authDAO.getAuthToken(authToken);
+            authDAO.deleteAuthToken(authToken);
     }
 }
 

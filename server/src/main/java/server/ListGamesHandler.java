@@ -2,6 +2,7 @@ package server;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.AuthDAO;
 import model.GameData;
@@ -47,7 +48,10 @@ public class ListGamesHandler implements Route {
         } catch (UnauthorizedException e) {
             res.status(401);
             return gson.toJson(new ErrorResponse(e.getMessage()));
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
+            res.status(500);
+            return gson.toJson(new ErrorResponse("Error: Unable to access data. Please try again later."));
+        }catch (Exception e) {
             res.status(500);
             return gson.toJson(new ErrorResponse("Error: " + e.getMessage()));
         }

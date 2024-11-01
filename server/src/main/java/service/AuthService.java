@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import model.AuthData;
 
@@ -13,7 +14,7 @@ public class AuthService {
         this.userDAO = userDAO;
     }
 
-    public AuthData verifyAuth(String authToken) {
+    public AuthData verifyAuth(String authToken) throws DataAccessException {
         AuthData authData = authDAO.getAuthToken(authToken);
         if (authData == null) {
             throw new RuntimeException("Invalid auth token");
@@ -21,7 +22,7 @@ public class AuthService {
         return authData; // Return the AuthData if the token is valid
     }
 
-    public void logout(String authToken) {
+    public void logout(String authToken) throws DataAccessException {
         AuthData authData = authDAO.getAuthToken(authToken);
         if (authData == null) {
             throw new RuntimeException("Invalid auth token");
