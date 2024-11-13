@@ -5,10 +5,10 @@ import exception.ResponseException;
 
 import java.io.*;
 import java.net.*;
+import java.util.List;
 
 
-import model.RegisterRequest;
-import model.RegisterResult;
+import model.*;
 
 public class ServerFacade {
 
@@ -18,10 +18,47 @@ public class ServerFacade {
         serverUrl = url;
     }
 
-//    public RegisterResult register(RegisterRequest request) {
-//        var path = "/register";
-//        return this.makeRequest()
-//    }
+    public RegisterResult register(RegisterRequest request) throws ResponseException {
+        var path = "/user";
+        return this.makeRequest("POST", path, request, RegisterResult.class);
+    }
+
+    public LoginResult login(LoginRequest request) throws ResponseException {
+        var path = "/session";
+        return this.makeRequest("POST", path, request, LoginResult.class);
+    }
+
+    public void logout(String authToken) throws ResponseException {
+        var path = "/session";
+        this.makeRequest("DELETE", path, null, null);
+    }
+
+    public List<GameData> listGames(String authToken) throws ResponseException {
+        var path = "/game";
+        record listGameResponse(List<> Gamedata) {
+        }
+        this.makeRequest("GET", path, null, List<GameData>.class);
+        return listGameResponse;
+    }
+
+    public int gameIdNum createGame(String GameName, String authToken) throws ResponseException {
+        var path = "/game";
+        return this.makeRequest("POST", path, (GameName, authToken), int.class);
+    }
+
+    public  joinGame("SOMETHING HERE") throws ResponseException {
+        var path = "/game";
+        this.makeRequest("PUT", path, null, null);
+    }
+
+    public  void clearDatabase(String authToken) throws ResponseException {
+        var path = "/db";
+        this.makeRequest("DELETE", path, null, null);
+    }
+
+
+
+
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
         try {
