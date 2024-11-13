@@ -1,14 +1,17 @@
-package Server;
+package ui;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
-
-import java.io.*;
-import java.net.*;
-import java.util.List;
-
-
 import model.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.util.List;
 
 public class ServerFacade {
 
@@ -35,19 +38,21 @@ public class ServerFacade {
 
     public List<GameData> listGames(String authToken) throws ResponseException {
         var path = "/game";
-        record listGameResponse(List<> Gamedata) {
+        record listGameResponse(List<GameData> games) {
         }
-        this.makeRequest("GET", path, null, List<GameData>.class);
-        return listGameResponse;
+        var response = this.makeRequest("GET", path, null, listGameResponse.class);
+        return response.games();
     }
 
-    public int gameIdNum createGame(String GameName, String authToken) throws ResponseException {
+    public int createGame(String gameName, String authToken) throws ResponseException {
         var path = "/game";
-        return this.makeRequest("POST", path, (GameName, authToken), int.class);
+        record CreateGameRequest(String gameName, String authToken) {}
+        CreateGameRequest request = new CreateGameRequest(gameName, authToken);
+        return this.makeRequest("POST", path, request, Integer.class);
     }
 
-    public  joinGame("SOMETHING HERE") throws ResponseException {
-        var path = "/game";
+    public void joinGame(int gameIdNum) throws ResponseException {
+        var path = String.format("/game/%s", gameIdNum);
         this.makeRequest("PUT", path, null, null);
     }
 
