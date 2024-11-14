@@ -212,40 +212,50 @@ public class ChessGame {
         }
 
         ChessPosition kingPos = findKing(teamColor);
-        Collection<ChessMove> kingMoves = validMoves(kingPos);
-        if (!kingMoves.isEmpty()) {
+        if (hasValidKingMoves(kingPos)) {
             return false;
         }
 
+        return !hasValidMovesForAnyPiece(teamColor);
+    }
+
+    private boolean hasValidKingMoves(ChessPosition kingPos) {
+        Collection<ChessMove> kingMoves = validMoves(kingPos);
+        return !kingMoves.isEmpty();
+    }
+
+    private boolean hasValidMovesForAnyPiece(TeamColor teamColor) {
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
                 ChessPosition position = new ChessPosition(i, j);
                 ChessPiece piece = getBoard().getPiece(position);
                 if (piece != null && piece.getTeamColor() == teamColor) {
-                    Collection<ChessMove> moves = validMoves(position);
-                    for (ChessMove move : moves) {
-                        // Save the current state of the board
-                        ChessBoard originalBoard = cloneBoard(getBoard());
-
-                        try {
-                            makeMove(move);
-                            if (!isInCheck(teamColor)) {
-                                // Restore the original board state
-                                setBoard(originalBoard);
-                                return false;
-                            }
-                        } catch (InvalidMoveException e) {
-                            // Ignore invalid moves
-                        } finally {
-                            // Restore the original board state
-                            setBoard(originalBoard);
-                        }
+                    if (hasValidMoveForPiece(position, teamColor)) {
+                        return true;
                     }
                 }
             }
         }
+        return false;
+    }
 
-        return true;
+    private boolean hasValidMoveForPiece(ChessPosition position, TeamColor teamColor) {
+        Collection<ChessMove> moves = validMoves(position);
+        ChessBoard originalBoard = cloneBoard(getBoard());
+
+        for (ChessMove move : moves) {
+            try {
+                makeMove(move);
+                if (!isInCheck(teamColor)) {
+                    setBoard(originalBoard);
+                    return true;
+                }
+            } catch (InvalidMoveException ignored) {
+            } finally {
+                setBoard(originalBoard);
+            }
+        }
+        return false;
     }
 
     /**

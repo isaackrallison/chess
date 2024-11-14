@@ -78,8 +78,21 @@ public class ChessBoardUi {
         }
     }
 
+    // New helper method to print a piece with color based on team
+    private static void printPieceWithColor(PrintStream out, chess.ChessPiece piece, String backGroundColor) {
+        if (piece != null) {
+            if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
+                out.print(SET_TEXT_COLOR_RED);
+            } else {
+                out.print(SET_TEXT_COLOR_GREEN);
+            }
+            printPiece(out, getPieceSymbol(piece), backGroundColor);
+        } else {
+            out.print(EMPTY);
+        }
+    }
 
-    private static void drawRowOfSquares(PrintStream out, chess.ChessBoard chessBoard, int boardRow, int rowNum, boolean foreward) {
+    private static void drawRowOfSquares(PrintStream out, chess.ChessBoard chessBoard, int boardRow, int rowNum, boolean forward) {
         String backGroundColor = null;
 
         for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_PADDED_CHARS; ++squareRow) {
@@ -106,34 +119,15 @@ public class ChessBoardUi {
 
                     out.print(EMPTY.repeat(prefixLength));
 
-                    // Get the piece at this position and print it, or print an empty space
-                    if (foreward) {
+                    // Print the piece depending on the board orientation
+                    if (forward) {
                         chess.ChessPiece piece = chessBoard.getPiece(new chess.ChessPosition(boardRow + 1, boardCol + 1));
-                        if (piece != null) {
-                            if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-                                out.print(SET_TEXT_COLOR_RED);
-                            } else {
-                                out.print(SET_TEXT_COLOR_GREEN);
-                            }
-                            printPiece(out, getPieceSymbol(piece), backGroundColor);
-                        } else {
-                            out.print(EMPTY);
-                        }
+                        printPieceWithColor(out, piece, backGroundColor);
                     } else {
                         ChessPosition pos = new chess.ChessPosition(BOARD_SIZE_IN_SQUARES - boardRow, BOARD_SIZE_IN_SQUARES - boardCol);
                         chess.ChessPiece piece = chessBoard.getPiece(pos);
-                        if (piece != null) {
-                            if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-                                out.print(SET_TEXT_COLOR_RED);
-                            } else {
-                                out.print(SET_TEXT_COLOR_GREEN);
-                            }
-                            printPiece(out, getPieceSymbol(piece), backGroundColor);
-                        } else {
-                            out.print(EMPTY);
-                        }
+                        printPieceWithColor(out, piece, backGroundColor);
                     }
-
 
                     out.print(EMPTY.repeat(suffixLength));
                 } else {

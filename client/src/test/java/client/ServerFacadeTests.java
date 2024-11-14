@@ -59,8 +59,8 @@ public class ServerFacadeTests {
     @Test
     public void loginSuccess() throws Exception{
         server.register(new RegisterRequest("newUser", "password", "newUser@example.com"));
-        var AuthData = server.login(new LoginRequest("newUser","password"));
-        Assertions.assertNotNull(AuthData);
+        var authData = server.login(new LoginRequest("newUser","password"));
+        Assertions.assertNotNull(authData);
     }
 
     @Test
@@ -75,9 +75,9 @@ public class ServerFacadeTests {
     @Test
     public void logoutSuccess() throws Exception {
         try {
-            var AuthData = server.register(new RegisterRequest("newUser", "password", "newUser@example.com"));
-            server.logout(AuthData.authToken());
-            server.listGames(AuthData.authToken());
+            var authData = server.register(new RegisterRequest("newUser", "password", "newUser@example.com"));
+            server.logout(authData.authToken());
+            server.listGames(authData.authToken());
         } catch (Exception e) {
             Assertions.assertTrue(e.getMessage().contains("401"), "Error indicates user unregistered");
         }
@@ -86,7 +86,7 @@ public class ServerFacadeTests {
     @Test
     public void logoutFailure() throws Exception{
         try {
-            var AuthData = server.login(new LoginRequest("newUser", "password"));
+            var authData = server.login(new LoginRequest("newUser", "password"));
             server.logout("fake-authtoken");
         } catch (Exception e) {
             Assertions.assertTrue(e.getMessage().contains("401"), "Error indicates user unregistered");
@@ -96,9 +96,9 @@ public class ServerFacadeTests {
     @Test
     public void createGameSuccess() throws  Exception{
         try {
-            var AuthData = server.register(new RegisterRequest("newUser", "password", "mail@email.com"));
-            server.createGame("game", AuthData.authToken());
-            Assertions.assertNotNull(server.listGames(AuthData.authToken()));
+            var authData = server.register(new RegisterRequest("newUser", "password", "mail@email.com"));
+            server.createGame("game", authData.authToken());
+            Assertions.assertNotNull(server.listGames(authData.authToken()));
         } catch (Exception e) {
             Assertions.assertTrue(e.getMessage().contains("401"), "Error indicates user unregistered");
         }
@@ -108,7 +108,7 @@ public class ServerFacadeTests {
     @Test
     public void createGameFailure() throws  Exception{
         try {
-            var AuthData = server.register(new RegisterRequest("newUser", "password", "email@mail.com"));
+            var authData = server.register(new RegisterRequest("newUser", "password", "email@mail.com"));
             server.createGame("game", "bad auth");
         } catch (Exception e) {
             Assertions.assertTrue(e.getMessage().contains("401"), "Error indicates user unauthorized");
@@ -118,9 +118,9 @@ public class ServerFacadeTests {
     @Test
     public void listGamesSuccess() throws  Exception{
         try{
-            var AuthData = server.login(new LoginRequest("newUser", "password"));
-            server.createGame("testGame", AuthData.authToken());
-            Assertions.assertNotNull(server.listGames(AuthData.authToken()));
+            var authData = server.login(new LoginRequest("newUser", "password"));
+            server.createGame("testGame", authData.authToken());
+            Assertions.assertNotNull(server.listGames(authData.authToken()));
         } catch (Exception e) {
             Assertions.assertTrue(e.getMessage().contains("401"), "Error indicates user unregistered");
         }
