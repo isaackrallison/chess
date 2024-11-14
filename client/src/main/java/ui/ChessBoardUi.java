@@ -2,7 +2,8 @@ package ui;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import chess.ChessBoard;
+import java.util.Objects;
+
 import chess.ChessGame;
 
 import static ui.EscapeSequences.*;
@@ -10,13 +11,7 @@ import static ui.EscapeSequences.*;
 public class ChessBoardUi {
     // Board dimensions.
     private static final int BOARD_SIZE_IN_SQUARES = 8;
-    private static final int SQUARE_SIZE_IN_PADDED_CHARS = 1;
-    private static final int BOARD_BOARDER_SIZE_IN_PADDED_CHARS = 1;
-
-    // Padded characters.
-//    private static final String EMPTY = "   ";
-    private static final String X = " X ";
-    private static final String O = " O ";
+    private static final int SQUARE_SIZE_IN_PADDED_CHARS = 3;
 
 
     public static void main(String[] args) {
@@ -24,60 +19,78 @@ public class ChessBoardUi {
 
         out.print(ERASE_SCREEN);
 
-        drawHeaders(out);
+        String[] headers = {"h", "g", "f", "e", "d", "c", "b", "a"};
+
+        drawHeaders(out, headers);
 
         ChessGame game = new ChessGame();
-        drawChessBoard(out, game.getBoard());
+        drawChessBoard(out, game.getBoard(),true);
+
+        drawHeaders(out, headers);
 
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
+
+        out.println();
+        out.println();
+
+        String[] newHeaders= {"a", "b" ,"c", "d", "e", "f", "g", "h"};
+
+        drawHeaders(out, newHeaders);
+
+        drawChessBoard(out, game.getBoard(),false);
+
+        drawHeaders(out, newHeaders);
     }
 
-    private static void drawHeaders(PrintStream out) {
+    private static void drawHeaders(PrintStream out,String[] headers) {
 
         setBlack(out);
 
-        String[] headers = {"a", "b", "c", "d", "e", "f", "g", "h"};
+        out.print(" ");
+
+        out.print("    ");
         for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
-            drawHeader(out, headers[boardCol]);
+//            drawHeader(out, headers[boardCol]);
+            out.print(SET_BG_COLOR_BLACK);
+            out.print(SET_TEXT_COLOR_WHITE);
+            out.printf("%-11s", headers[boardCol]);
         }
 
         out.println();
     }
 
-    private static void drawHeader(PrintStream out, String headerText) {
-//        int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS / 2;
-//        int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
 
-        int prefixLength = 1 ;
-        int suffixLength = 1;
-
-        out.print(EMPTY.repeat(prefixLength));
-        printHeaderText(out, headerText);
-        out.print(EMPTY.repeat(suffixLength));
-    }
-
-    private static void printHeaderText(PrintStream out, String player) {
-        out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_GREEN);
-
-        out.print(player);
-
-        setBlack(out);
-    }
-
-
-    private static void drawChessBoard(PrintStream out, chess.ChessBoard chessBoard) {
-        for (int boardRow = BOARD_SIZE_IN_SQUARES - 1; boardRow >= 0; --boardRow) {
-            drawRowOfSquares(out, chessBoard, boardRow);
+    private static void drawChessBoard(PrintStream out, chess.ChessBoard chessBoard, boolean foreward) {
+        if (foreward) {
+            int rowNum = 1;
+            for (int boardRow = BOARD_SIZE_IN_SQUARES - 1; boardRow >= 0; --boardRow) {
+                drawRowOfSquares(out, chessBoard, boardRow, rowNum, foreward);
+                rowNum++;
+            }
+        } else {
+            int rowNum = 8;
+            for (int boardRow = BOARD_SIZE_IN_SQUARES - 1; boardRow >= 0; --boardRow) {
+                drawRowOfSquares(out, chessBoard, boardRow, rowNum, foreward);
+                rowNum--;
+            }
         }
     }
 
-    private static void drawRowOfSquares(PrintStream out, chess.ChessBoard chessBoard, int boardRow) {
+
+    private static void drawRowOfSquares(PrintStream out, chess.ChessBoard chessBoard, int boardRow, int rowNum, boolean foreward) {
         String backGroundColor = null;
+
         for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_PADDED_CHARS; ++squareRow) {
+            if (squareRow == 1) {
+                setBlackWrite(out);
+                out.print(rowNum);
+                setBlack(out);
+            } else {
+                out.print(" ");
+            }
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
-                boolean isWhiteSquare = (boardRow + boardCol) % 2 == 0;
+                boolean isWhiteSquare = (boardRow + boardCol) % 2 != 0;
                 if (isWhiteSquare) {
                     out.print(SET_BG_COLOR_WHITE);
                     backGroundColor = "white";
@@ -93,19 +106,43 @@ public class ChessBoardUi {
                     out.print(EMPTY.repeat(prefixLength));
 
                     // Get the piece at this position and print it, or print an empty space
-                    chess.ChessPiece piece = chessBoard.getPiece(new chess.ChessPosition(boardRow + 1, boardCol + 1));
-                    if (piece != null) {
-                        printPlayer(out, getPieceSymbol(piece), backGroundColor);
+                    if (foreward) {
+                        chess.ChessPiece piece = chessBoard.getPiece(new chess.ChessPosition(boardRow + 1, boardCol + 1));
+                        if (piece != null) {
+                            if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
+                                out.print(SET_TEXT_COLOR_RED);
+                            } else {
+                                out.print(SET_TEXT_COLOR_GREEN);
+                            }
+                            printPiece(out, getPieceSymbol(piece), backGroundColor);
+                        } else {
+                            out.print(EMPTY);
+                        }
                     } else {
-                        out.print(EMPTY);
+                        chess.ChessPiece piece = chessBoard.getPiece(new chess.ChessPosition(BOARD_SIZE_IN_SQUARES - boardRow, BOARD_SIZE_IN_SQUARES - boardCol));
+                        if (piece != null) {
+                            if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
+                                out.print(SET_TEXT_COLOR_RED);
+                            } else {
+                                out.print(SET_TEXT_COLOR_GREEN);
+                            }
+                            printPiece(out, getPieceSymbol(piece), backGroundColor);
+                        } else {
+                            out.print(EMPTY);
+                        }
                     }
+
 
                     out.print(EMPTY.repeat(suffixLength));
                 } else {
                     out.print(EMPTY.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
                 }
-                setBlack(out);
             }
+            if (squareRow == 1) {
+                setBlackWrite(out);
+                out.print(rowNum);
+            }
+            setBlack(out);
             out.println();
         }
     }
@@ -149,28 +186,18 @@ public class ChessBoardUi {
         return EMPTY;
     }
 
-    private static void setWhite(PrintStream out) {
-        out.print(SET_BG_COLOR_WHITE);
-        out.print(SET_TEXT_COLOR_WHITE);
-    }
-
-    private static void setGrey(PrintStream out) {
-        out.print(SET_BG_COLOR_LIGHT_GREY);
-//        out.print(SET_TEXT_COLOR_MAGENTA);
-    }
-
-    private static void setRed(PrintStream out) {
-        out.print(SET_BG_COLOR_RED);
-        out.print(SET_TEXT_COLOR_RED);
-    }
-
     private static void setBlack(PrintStream out) {
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_BLACK);
     }
 
-    private static void printPlayer(PrintStream out, String symbol, String backGroundColor) {
-        if (backGroundColor == "white") {
+    private static void setBlackWrite(PrintStream out) {
+        out.print(SET_BG_COLOR_BLACK);
+        out.print(SET_TEXT_COLOR_WHITE);
+    }
+
+    private static void printPiece(PrintStream out, String symbol, String backGroundColor) {
+        if (Objects.equals(backGroundColor, "white")) {
             out.print(SET_BG_COLOR_WHITE);
             out.print(symbol);
         } else {
