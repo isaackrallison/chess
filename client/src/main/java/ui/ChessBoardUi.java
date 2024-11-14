@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 import chess.ChessGame;
+import chess.ChessPosition;
 
 import static ui.EscapeSequences.*;
 
@@ -119,7 +120,8 @@ public class ChessBoardUi {
                             out.print(EMPTY);
                         }
                     } else {
-                        chess.ChessPiece piece = chessBoard.getPiece(new chess.ChessPosition(BOARD_SIZE_IN_SQUARES - boardRow, BOARD_SIZE_IN_SQUARES - boardCol));
+                        ChessPosition pos = new chess.ChessPosition(BOARD_SIZE_IN_SQUARES - boardRow, BOARD_SIZE_IN_SQUARES - boardCol);
+                        chess.ChessPiece piece = chessBoard.getPiece(pos);
                         if (piece != null) {
                             if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
                                 out.print(SET_TEXT_COLOR_RED);

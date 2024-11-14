@@ -12,13 +12,13 @@ import java.util.List;
 
 public class ServerFacadeTests {
 
-    private static Server new_server;
+    private static Server fascade;
     static ServerFacade server;
 
     @BeforeAll
     public static void init() {
-        new_server = new Server();
-        var port = new_server.run(8080);
+        fascade = new Server();
+        var port = fascade.run(0);
         server = new ServerFacade("http://localhost:" + port);
         System.out.println("Started test HTTP server on " + port);
     }
@@ -30,7 +30,7 @@ public class ServerFacadeTests {
 
     @AfterAll
     static void stopServer() {
-        new_server.stop();
+        fascade.stop();
     }
 
 
@@ -94,7 +94,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void CreateGameSuccess() throws  Exception{
+    public void createGameSuccess() throws  Exception{
         try {
             var AuthData = server.register(new RegisterRequest("newUser", "password", "mail@email.com"));
             server.createGame("game", AuthData.authToken());
@@ -106,7 +106,7 @@ public class ServerFacadeTests {
 
 
     @Test
-    public void CreateGameFailure() throws  Exception{
+    public void createGameFailure() throws  Exception{
         try {
             var AuthData = server.register(new RegisterRequest("newUser", "password", "email@mail.com"));
             server.createGame("game", "bad auth");
@@ -116,7 +116,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void ListGamesSuccess() throws  Exception{
+    public void listGamesSuccess() throws  Exception{
         try{
             var AuthData = server.login(new LoginRequest("newUser", "password"));
             server.createGame("testGame", AuthData.authToken());
@@ -127,7 +127,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void ListGamesFailure() throws Exception {
+    public void listGamesFailure() throws Exception {
         server.clearDatabase();
         var authData = server.register(new RegisterRequest("newUser", "password", "email@gmail.com"));
         List<GameData> expectedList = new ArrayList<>();
@@ -136,20 +136,20 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void JoinGameSuccess() throws Exception {
+    public void joinGameSuccess() throws Exception {
         try {
-            var AuthData = server.register(new RegisterRequest("newUser", "password", "email@gmail.com"));
-            server.createGame("newTest", AuthData.authToken());
-            server.createGame("newnewTest", AuthData.authToken());
-            server.joinGame("WHITE", 1, AuthData.authToken());
-            server.joinGame("WHITE", 1, AuthData.authToken());
+            var authData = server.register(new RegisterRequest("newUser", "password", "email@gmail.com"));
+            server.createGame("newTest", authData.authToken());
+            server.createGame("newnewTest", authData.authToken());
+            server.joinGame("WHITE", 1, authData.authToken());
+            server.joinGame("WHITE", 1, authData.authToken());
         } catch (Exception e) {
             Assertions.assertTrue(e.getMessage().contains("403"), "Error indicates user unregistered");
         }
     }
 
     @Test
-    public void JoinGameFailure() throws Exception{
+    public void joinGameFailure() throws Exception{
         try {
             server.joinGame("WHITE", 1,"bad Auth");
         } catch (Exception e) {

@@ -43,7 +43,7 @@ public class PostLoginClient {
 
     private String create(String... params) throws ResponseException{
         if (params.length == 1) {
-            int GameIdNum = server.createGame(params[0], authToken);
+            int gameIdNum = server.createGame(params[0], authToken);
             return String.format("Game created.\n");
         }
         throw new ResponseException(400, "Expected: create <NAME> ");
