@@ -1,5 +1,6 @@
 package ui;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,24 +43,31 @@ public class PostLoginClient {
 
     private String create(String... params) throws ResponseException{
         if (params.length == 1) {
-            server.createGame(params[0], authToken);
-            return String.format("Game %s created.\n", params[0]);
+            int GameIdNum = server.createGame(params[0], authToken);
+            return String.format("Game %s created.\n", GameIdNum);
         }
         throw new ResponseException(400, "Expected: create <NAME> ");
         }
 
-    private String list(String... params) throws ResponseException{
+    private String list(String... params) throws ResponseException {
         if (params.length == 0) {
+            String gameNameIdList = "";
             List<GameData> games = server.listGames(authToken);
-            return String.format("All Games:\n %s", games);
+
+            for (GameData game : games) {
+                gameNameIdList += "ID: " + game.gameID() + ", Name: " + game.gameName() + "\n";
+            }
+
+            return String.format("All Games:\n%s", gameNameIdList);
         }
         throw new ResponseException(400, "Expected: list");
-        }
+    }
+
 
     private String join(String... params) throws ResponseException{
         if (params.length == 2) {
             server.joinGame(params[1], Integer.parseInt(params[0]));
-            new GameplayClient();
+            ChessBoardUi.main(params);
             return String.format("Joining %s as %s:", params[0], params[1]);
         }
         throw new ResponseException(400, "Expected: join <ID> [WHITE|BLACK]");
@@ -67,7 +75,7 @@ public class PostLoginClient {
 
     private String observe(String... params) throws ResponseException {
         if (params.length == 1) {
-            new GameplayClient();
+            ChessBoardUi.main(params);
             return String.format("Observing game %s:", params[0]);
         }
         throw new ResponseException(400, "Expected: observe <ID> ");

@@ -54,6 +54,7 @@ public class Repl {
                 System.out.print(SET_TEXT_COLOR_GREEN + result);
 
                 if (result.contains("Logged out")) {
+                    isLoggedIn = false;
                     run();
                 }
             } catch (Throwable e) {
