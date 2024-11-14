@@ -31,9 +31,9 @@ public class ServerFacade {
         return this.makeRequest("POST", path, request, LoginResult.class);
     }
 
-    public void logout(String AuthToken) throws ResponseException {
+    public void logout(String authToken) throws ResponseException {
         var path = "/session";
-        this.makeRequest("DELETE", path, AuthToken, null);
+        this.makeRequest("DELETE", path, authToken, null);
     }
 
     public List<GameData> listGames(String authToken) throws ResponseException {
@@ -86,6 +86,9 @@ public class ServerFacade {
         if (request != null) {
             http.addRequestProperty("Content-Type", "application/json");
             String reqData = new Gson().toJson(request);
+            if (request instanceof String authToken) {
+                http.addRequestProperty("Authorization", authToken);
+            }
             try (OutputStream reqBody = http.getOutputStream()) {
                 reqBody.write(reqData.getBytes());
             }

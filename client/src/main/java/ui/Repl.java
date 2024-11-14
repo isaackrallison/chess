@@ -52,6 +52,10 @@ public class Repl {
             try {
                 result = postLoginClient.eval(line);
                 System.out.print(SET_TEXT_COLOR_GREEN + result);
+
+                if (result.contains("Logged out")) {
+                    run();
+                }
             } catch (Throwable e) {
                 System.out.print(e.toString());
             }

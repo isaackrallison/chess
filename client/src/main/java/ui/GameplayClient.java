@@ -1,5 +1,8 @@
 package ui;
 
 public class GameplayClient {
-//    just draw the board here
+
+    public static void main(String[] args) {
+        ChessBoardUi.main(args);
+    }
 }

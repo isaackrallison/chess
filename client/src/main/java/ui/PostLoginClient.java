@@ -6,17 +6,19 @@ import java.util.List;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import model.GameData;
-import model.LoginRequest;
-import model.RegisterRequest;
+import ui.GameplayClient;
+import ui.*;
 
 public class PostLoginClient {
     private final ServerFacade server;
     private final String serverUrl;
+    private final String authToken;
 
 
-    public PostLoginClient(String serverUrl) {
+    public PostLoginClient(String serverUrl, String authToken) {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
+        this.authToken = authToken;
     }
 
     public String eval(String input) {
@@ -39,16 +41,16 @@ public class PostLoginClient {
     }
 
     private String create(String... params) throws ResponseException{
-        if (params.length == 2) {
-            server.createGame(params[0], params[1]);
+        if (params.length == 1) {
+            server.createGame(params[0], authToken);
             return String.format("Game %s created.\n", params[0]);
         }
         throw new ResponseException(400, "Expected: create <NAME> ");
         }
 
     private String list(String... params) throws ResponseException{
-        if (params.length == 1) {
-            List<GameData> games = server.listGames(params[0]);
+        if (params.length == 0) {
+            List<GameData> games = server.listGames(authToken);
             return String.format("All Games:\n %s", games);
         }
         throw new ResponseException(400, "Expected: list");
@@ -57,6 +59,7 @@ public class PostLoginClient {
     private String join(String... params) throws ResponseException{
         if (params.length == 2) {
             server.joinGame(params[1], Integer.parseInt(params[0]));
+            new GameplayClient();
             return String.format("Joining %s as %s:", params[0], params[1]);
         }
         throw new ResponseException(400, "Expected: join <ID> [WHITE|BLACK]");
@@ -64,15 +67,16 @@ public class PostLoginClient {
 
     private String observe(String... params) throws ResponseException {
         if (params.length == 1) {
+            new GameplayClient();
             return String.format("Observing game %s:", params[0]);
         }
         throw new ResponseException(400, "Expected: observe <ID> ");
     }
 
     private String logout(String... params) throws ResponseException {
-        if (params.length == 1) {
-            server.logout(params[0]);
-            return String.format("Logged out of game %s:", params[0]);
+        if (params.length == 0) {
+            server.logout(authToken);
+            return String.format("Logged out");
         }
         throw new ResponseException(400, "Expected: logout");
     }
