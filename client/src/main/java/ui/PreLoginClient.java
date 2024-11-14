@@ -1,6 +1,7 @@
 package ui;
 
 import java.util.Arrays;
+import java.util.List;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
@@ -35,16 +36,18 @@ public class PreLoginClient {
 
     public String register(String... params) throws ResponseException {
         if (params.length == 3) {
-            server.register(new RegisterRequest(params[0], params[1], params[2]));
-            return String.format("You signed in as %s.\n", params[0]);
+            var data = server.register(new RegisterRequest(params[0], params[1], params[2]));
+            String autToken = data.authToken();
+            return String.format("You signed in as %s.\n" + autToken, params[0]);
         }
         throw new ResponseException(400, "Expected: register <USERNAME> <PASSWORD> <EMAIL>");
         }
 
-    public String login(String... params) throws ResponseException {
+    public  String login(String... params) throws ResponseException {
         if (params.length == 2) {
-            server.login(new LoginRequest(params[0], params[1]));
-            return String.format("You signed in as %s.\n", params[0]);
+            var data = server.login(new LoginRequest(params[0], params[1]));
+            String authToken = data.authToken();
+            return String.format("You signed in as %s.\n" + authToken, params[0]);
         }
         throw new ResponseException(400, "Expected: login <USERNAME> <PASSWORD>");
     }

@@ -73,7 +73,6 @@ public class ServerFacadeTests {
     @Test
     public void logoutSuccess() throws Exception {
         try {
-//            var AuthData = server.login(new LoginRequest("newUser", "password"));
             var AuthData = server.register(new RegisterRequest("newUser", "password", "newUser@example.com"));
             server.logout(AuthData.authToken());
             server.listGames(AuthData.authToken());
