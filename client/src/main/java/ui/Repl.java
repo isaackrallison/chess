@@ -4,16 +4,22 @@ import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
 
+
 public class Repl {
-    private final PreLoginClient client;
+    private final PreLoginClient preLoginClient;
+    private final PostLoginClient postLoginClient;
+//    private final GameplayClient gameplayClient;
+
 
     public Repl(String serverUrl) {
-        client = new PreLoginClient(serverUrl);
+        preLoginClient = new PreLoginClient(serverUrl);
+        postLoginClient = new PostLoginClient(serverUrl);
+//        gameplayClient = new GameplayClient(serverUrl);
     }
 
     public void run() {
-        System.out.println("\uD83D\uDC36 Welcome to the pet store. Sign in to start.");
-        System.out.print(client.help());
+        System.out.println("\nWelcome to Chess. Register or sign in to get started");
+        System.out.print(preLoginClient.help());
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
@@ -22,7 +28,7 @@ public class Repl {
             String line = scanner.nextLine();
 
             try {
-                result = client.eval(line);
+                result = preLoginClient.eval(line);
                 System.out.print(SET_TEXT_COLOR_GREEN + result);
             } catch (Throwable e) {
                 var msg = e.toString();
