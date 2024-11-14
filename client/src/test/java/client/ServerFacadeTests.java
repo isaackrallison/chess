@@ -4,25 +4,29 @@ import com.sun.source.tree.AssertTree;
 import model.RegisterRequest;
 import org.junit.jupiter.api.*;
 import server.Server;
+import ui.Repl;
 import ui.ServerFacade;
 
 
 public class ServerFacadeTests {
 
-    private static Server server;
-    static ServerFacade facade;
+    private static Server new_server;
+    static ServerFacade server;
 
     @BeforeAll
     public static void init() {
-        server = new Server();
-        var port = server.run(0);
-        facade = new ServerFacade("http://localhost:" + port);
+        new_server = new Server();
+        var port = new_server.run(8080);
+        server = new ServerFacade("http://localhost:" + port);
         System.out.println("Started test HTTP server on " + port);
     }
 
+    @BeforeEach
+    void clearData() throws Exception {server.clearDatabase();}
+
     @AfterAll
     static void stopServer() {
-        server.stop();
+        new_server.stop();
     }
 
 
@@ -34,17 +38,17 @@ public class ServerFacadeTests {
 
     @Test
     public void registerSuccess() throws Exception{
-        var authData = facade.register(new RegisterRequest("newUser", "password", "newUser@example.com"));
+        var authData = server.register(new RegisterRequest("newUser", "password", "newUser@example.com"));
         Assertions.assertNotNull(authData);
     }
 
     @Test
     public void registerFailure() {
         try {
-            facade.register(new RegisterRequest("newUser", "password", "newUser@example.com"));
-            var authData = facade.register(new RegisterRequest("newUser", "password", "newUser@example.com"));
+            server.register(new RegisterRequest("newUser", "password", "newUser@example.com"));
+            var authData = server.register(new RegisterRequest("newUser", "password", "newUser@example.com"));
         } catch (Exception e) {
-            Assertions.assertTrue(e.getMessage().contains("Already Exsists"), "Error indicates name duplicated");
+            Assertions.assertTrue(e.getMessage().contains("403"), "Error indicates name duplicated");
         }
     }
 

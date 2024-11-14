@@ -56,7 +56,7 @@ public class ServerFacade {
         this.makeRequest("PUT", path, null, null);
     }
 
-    public  void clearDatabase(String authToken) throws ResponseException {
+    public  void clearDatabase() throws ResponseException {
         var path = "/db";
         this.makeRequest("DELETE", path, null, null);
     }
