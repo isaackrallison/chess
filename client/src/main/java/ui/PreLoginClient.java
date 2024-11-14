@@ -1,9 +1,7 @@
 package ui;
 
 import java.util.Arrays;
-import java.util.List;
 
-import com.google.gson.Gson;
 import exception.ResponseException;
 import model.LoginRequest;
 import model.RegisterRequest;

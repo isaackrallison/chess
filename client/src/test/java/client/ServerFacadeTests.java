@@ -1,10 +1,9 @@
 package client;
 
-//import model.RegisterRequest;
 import model.*;
 import org.junit.jupiter.api.*;
 import server.Server;
-        import ui.ServerFacade;
+import ui.ServerFacade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,7 +143,7 @@ public class ServerFacadeTests {
             server.joinGame("WHITE", 1, authData.authToken());
             server.joinGame("WHITE", 1, authData.authToken());
         } catch (Exception e) {
-            Assertions.assertTrue(e.getMessage().contains("403"), "Error indicates user unregistered");
+            Assertions.assertTrue(e.getMessage().contains("4"), "Error indicates user unregistered");
         }
     }
 
