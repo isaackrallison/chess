@@ -95,7 +95,7 @@ public class ServerFacadeTests {
     public void CreateGameSuccess() throws  Exception{
         try {
             server.clearDatabase();
-            var AuthData = server.login(new LoginRequest("newUser", "password"));
+            var AuthData = server.register(new RegisterRequest("newUser", "password", "mail@email.com"));
             server.createGame("game", AuthData.authToken());
             Assertions.assertNotNull(server.listGames(AuthData.authToken()));
         } catch (Exception e) {
@@ -108,7 +108,7 @@ public class ServerFacadeTests {
     public void CreateGameFailure() throws  Exception{
         try {
             server.clearDatabase();
-            var AuthData = server.login(new LoginRequest("newUser", "password"));
+            var AuthData = server.register(new RegisterRequest("newUser", "password", "email@mail.com"));
             server.createGame("game", "bad auth");
         } catch (Exception e) {
             Assertions.assertTrue(e.getMessage().contains("401"), "Error indicates user unauthorized");
@@ -128,10 +128,31 @@ public class ServerFacadeTests {
 
     @Test
     public void ListGamesFailure() throws Exception{
-        var AuthData = server.login(new LoginRequest("newUser", "password"));
         server.clearDatabase();
+        var AuthData = server.register(new RegisterRequest("newUser", "password","email@gmail.com"));
         Assertions.assertNull(server.listGames(AuthData.authToken()));
     }
+
+    @Test
+    public void JoinGameSucccess() throws Exception{
+        server.clearDatabase();
+        var AuthData = server.login(new LoginRequest("newUser", "password"));
+        server.createGame("newTest", AuthData.authToken());
+        server.joinGame("WHITE", 1);
+//        Assertions.assertDoesNotThrow(Exception);
+    }
+
+    @Test
+    public void JoinGameFailure() throws Exception{
+        try {
+            server.clearDatabase();
+            server.joinGame("WHITE", 1);
+        } catch (Exception e) {
+            Assertions.assertTrue(e.getMessage().contains("404"), "Error indicates user unregistered");
+        }
+    }
+
+
 
 
 
