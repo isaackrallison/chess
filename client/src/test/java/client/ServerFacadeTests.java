@@ -115,6 +115,24 @@ public class ServerFacadeTests {
         }
     }
 
+    @Test
+    public void ListGamesSuccess() throws  Exception{
+        try{
+            var AuthData = server.login(new LoginRequest("newUser", "password"));
+            server.createGame("testGame", AuthData.authToken());
+            Assertions.assertNotNull(server.listGames(AuthData.authToken()));
+        } catch (Exception e) {
+            Assertions.assertTrue(e.getMessage().contains("401"), "Error indicates user unregistered");
+        }
+    }
+
+    @Test
+    public void ListGamesFailure() throws Exception{
+        var AuthData = server.login(new LoginRequest("newUser", "password"));
+        server.clearDatabase();
+        Assertions.assertNull(server.listGames(AuthData.authToken()));
+    }
+
 
 
 
