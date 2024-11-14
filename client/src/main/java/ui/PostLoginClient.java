@@ -66,7 +66,7 @@ public class PostLoginClient {
 
     private String join(String... params) throws ResponseException{
         if (params.length == 2) {
-            server.joinGame(params[1], Integer.parseInt(params[0]));
+            server.joinGame(params[1], Integer.parseInt(params[0]), authToken);
             ChessBoardUi.main(params);
             return String.format("Joining %s as %s:", params[0], params[1]);
         }

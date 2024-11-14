@@ -1,13 +1,13 @@
 package client;
 
-import com.sun.source.tree.AssertTree;
 //import model.RegisterRequest;
-import exception.ResponseException;
 import model.*;
 import org.junit.jupiter.api.*;
 import server.Server;
-import ui.Repl;
-import ui.ServerFacade;
+        import ui.ServerFacade;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ServerFacadeTests {
@@ -24,7 +24,9 @@ public class ServerFacadeTests {
     }
 
     @BeforeEach
-    void clearData() throws Exception {server.clearDatabase();}
+    void clearData() throws Exception {
+        server.clearDatabase();;
+    }
 
     @AfterAll
     static void stopServer() {
@@ -94,7 +96,6 @@ public class ServerFacadeTests {
     @Test
     public void CreateGameSuccess() throws  Exception{
         try {
-            server.clearDatabase();
             var AuthData = server.register(new RegisterRequest("newUser", "password", "mail@email.com"));
             server.createGame("game", AuthData.authToken());
             Assertions.assertNotNull(server.listGames(AuthData.authToken()));
@@ -107,7 +108,6 @@ public class ServerFacadeTests {
     @Test
     public void CreateGameFailure() throws  Exception{
         try {
-            server.clearDatabase();
             var AuthData = server.register(new RegisterRequest("newUser", "password", "email@mail.com"));
             server.createGame("game", "bad auth");
         } catch (Exception e) {
@@ -127,28 +127,33 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void ListGamesFailure() throws Exception{
+    public void ListGamesFailure() throws Exception {
         server.clearDatabase();
-        var AuthData = server.register(new RegisterRequest("newUser", "password","email@gmail.com"));
-        Assertions.assertNull(server.listGames(AuthData.authToken()));
+        var authData = server.register(new RegisterRequest("newUser", "password", "email@gmail.com"));
+        List<GameData> expectedList = new ArrayList<>();
+        List<GameData> actualList = server.listGames(authData.authToken());
+        Assertions.assertEquals(expectedList, actualList);
     }
 
     @Test
-    public void JoinGameSucccess() throws Exception{
-        server.clearDatabase();
-        var AuthData = server.login(new LoginRequest("newUser", "password"));
-        server.createGame("newTest", AuthData.authToken());
-        server.joinGame("WHITE", 1);
-//        Assertions.assertDoesNotThrow(Exception);
+    public void JoinGameSuccess() throws Exception {
+        try {
+            var AuthData = server.register(new RegisterRequest("newUser", "password", "email@gmail.com"));
+            server.createGame("newTest", AuthData.authToken());
+            server.createGame("newnewTest", AuthData.authToken());
+            server.joinGame("WHITE", 1, AuthData.authToken());
+            server.joinGame("WHITE", 1, AuthData.authToken());
+        } catch (Exception e) {
+            Assertions.assertTrue(e.getMessage().contains("403"), "Error indicates user unregistered");
+        }
     }
 
     @Test
     public void JoinGameFailure() throws Exception{
         try {
-            server.clearDatabase();
-            server.joinGame("WHITE", 1);
+            server.joinGame("WHITE", 1,"bad Auth");
         } catch (Exception e) {
-            Assertions.assertTrue(e.getMessage().contains("404"), "Error indicates user unregistered");
+            Assertions.assertTrue(e.getMessage().contains("401"), "Error indicates user unregistered");
         }
     }
 
