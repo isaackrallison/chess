@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
+import model.LoginRequest;
+import model.RegisterRequest;
 
 public class PreLoginClient {
     private String visitorName = null;
@@ -32,14 +34,20 @@ public class PreLoginClient {
     }
 
 
-    public String register(String... params) {return "not working";};
+    public String register(String... params) throws ResponseException {
+        if (params.length == 3) {
+            server.register(new RegisterRequest(params[0], params[1], params[2]));
+            return String.format("You signed in as %s.\n", params[0]);
+        }
+        throw new ResponseException(400, "Expected: register <USERNAME> <PASSWORD> <EMAIL>");
+        }
 
     public String login(String... params) throws ResponseException {
-        if (params.length >= 1) {
-            visitorName = String.join("-", params);
-            return String.format("You signed in as %s.", visitorName);
+        if (params.length == 2) {
+            server.login(new LoginRequest(params[0], params[1]));
+            return String.format("You signed in as %s.\n", params[0]);
         }
-        throw new ResponseException(400, "Expected: <yourname>");
+        throw new ResponseException(400, "Expected: login <USERNAME> <PASSWORD>");
     }
 
     public String help() {
@@ -48,7 +56,6 @@ public class PreLoginClient {
                     login <USERNAME> <PASSWORD>            - to play chess
                     quit                                   - playing chess
                     help                                   - with possible commands
-    
                     """;
     }
 }
