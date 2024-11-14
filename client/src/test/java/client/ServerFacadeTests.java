@@ -91,6 +91,32 @@ public class ServerFacadeTests {
         }
     }
 
+    @Test
+    public void CreateGameSuccess() throws  Exception{
+        try {
+            server.clearDatabase();
+            var AuthData = server.login(new LoginRequest("newUser", "password"));
+            server.createGame("game", AuthData.authToken());
+            Assertions.assertNotNull(server.listGames(AuthData.authToken()));
+        } catch (Exception e) {
+            Assertions.assertTrue(e.getMessage().contains("401"), "Error indicates user unregistered");
+        }
+    }
+
+
+    @Test
+    public void CreateGameFailure() throws  Exception{
+        try {
+            server.clearDatabase();
+            var AuthData = server.login(new LoginRequest("newUser", "password"));
+            server.createGame("game", "bad auth");
+        } catch (Exception e) {
+            Assertions.assertTrue(e.getMessage().contains("401"), "Error indicates user unauthorized");
+        }
+    }
+
+
+
 
 
 
