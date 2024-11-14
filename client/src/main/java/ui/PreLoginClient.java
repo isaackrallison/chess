@@ -8,7 +8,6 @@ import model.LoginRequest;
 import model.RegisterRequest;
 
 public class PreLoginClient {
-    private String visitorName = null;
     private final ServerFacade server;
     private final String serverUrl;
 

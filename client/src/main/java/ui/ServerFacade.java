@@ -31,16 +31,16 @@ public class ServerFacade {
         return this.makeRequest("POST", path, request, LoginResult.class);
     }
 
-    public void logout(String authToken) throws ResponseException {
+    public void logout(String AuthToken) throws ResponseException {
         var path = "/session";
-        this.makeRequest("DELETE", path, null, null);
+        this.makeRequest("DELETE", path, AuthToken, null);
     }
 
     public List<GameData> listGames(String authToken) throws ResponseException {
         var path = "/game";
         record listGameResponse(List<GameData> games) {
         }
-        var response = this.makeRequest("GET", path, null, listGameResponse.class);
+        var response = this.makeRequest("GET", path, authToken, listGameResponse.class);
         return response.games();
     }
 
@@ -51,9 +51,10 @@ public class ServerFacade {
         return this.makeRequest("POST", path, request, Integer.class);
     }
 
-    public void joinGame(int gameIdNum) throws ResponseException {
+    public void joinGame(String color, int gameIdNum) throws ResponseException {
         var path = String.format("/game/%s", gameIdNum);
-        this.makeRequest("PUT", path, null, null);
+        JoinGameRequest request = new JoinGameRequest(color, gameIdNum);
+        this.makeRequest("PUT", path, request, null);
     }
 
     public  void clearDatabase() throws ResponseException {

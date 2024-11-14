@@ -1,15 +1,15 @@
 package ui;
 
 import java.util.Arrays;
+import java.util.List;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
+import model.GameData;
 import model.LoginRequest;
 import model.RegisterRequest;
 
 public class PostLoginClient {
-
-    private String visitorName = null;
     private final ServerFacade server;
     private final String serverUrl;
 
@@ -19,16 +19,73 @@ public class PostLoginClient {
         this.serverUrl = serverUrl;
     }
 
+    public String eval(String input) {
+        try {
+            var tokens = input.toLowerCase().split(" ");
+            var cmd = (tokens.length > 0) ? tokens[0] : "help";
+            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
+            return switch (cmd) {
+                case "create" -> create(params);
+                case "list" -> list(params);
+                case "join" -> join(params);
+                case "observe" -> observe(params);
+                case "logout" -> logout(params);
+                case "quit" -> "quit";
+                default -> help();
+            };
+        } catch (ResponseException ex) {
+            return ex.getMessage();
+        }
+    }
+
+    private String create(String... params) throws ResponseException{
+        if (params.length == 2) {
+            server.createGame(params[0], params[1]);
+            return String.format("Game %s created.\n", params[0]);
+        }
+        throw new ResponseException(400, "Expected: create <NAME> ");
+        }
+
+    private String list(String... params) throws ResponseException{
+        if (params.length == 1) {
+            List<GameData> games = server.listGames(params[0]);
+            return String.format("All Games:\n %s", games);
+        }
+        throw new ResponseException(400, "Expected: list");
+        }
+
+    private String join(String... params) throws ResponseException{
+        if (params.length == 2) {
+            server.joinGame(params[1], Integer.parseInt(params[0]));
+            return String.format("Joining %s as %s:", params[0], params[1]);
+        }
+        throw new ResponseException(400, "Expected: join <ID> [WHITE|BLACK]");
+    }
+
+    private String observe(String... params) throws ResponseException {
+        if (params.length == 1) {
+            return String.format("Observing game %s:", params[0]);
+        }
+        throw new ResponseException(400, "Expected: observe <ID> ");
+    }
+
+    private String logout(String... params) throws ResponseException {
+        if (params.length == 1) {
+            server.logout(params[0]);
+            return String.format("Logged out of game %s:", params[0]);
+        }
+        throw new ResponseException(400, "Expected: logout");
+    }
 
     public String help() {
         return """
-                create <NAME>       - a game
-                list                - games
+                create <NAME>           - a game
+                list                    - games
                 join <ID> [WHITE|BLACK] - a game
-                observe <ID>        - a game
-                logout              - when you are done
-                quit                - playing chess
-                help                - with possible commands
+                observe <ID>            - a game
+                logout                  - when you are done
+                quit                    - playing chess
+                help                    - with possible commands
                 """;
     }
 }
