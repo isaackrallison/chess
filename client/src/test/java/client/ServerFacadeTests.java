@@ -1,7 +1,9 @@
 package client;
 
 import com.sun.source.tree.AssertTree;
-import model.RegisterRequest;
+//import model.RegisterRequest;
+import exception.ResponseException;
+import model.*;
 import org.junit.jupiter.api.*;
 import server.Server;
 import ui.Repl;
@@ -46,11 +48,29 @@ public class ServerFacadeTests {
     public void registerFailure() {
         try {
             server.register(new RegisterRequest("newUser", "password", "newUser@example.com"));
-            var authData = server.register(new RegisterRequest("newUser", "password", "newUser@example.com"));
+            server.register(new RegisterRequest("newUser", "password", "newUser@example.com"));
         } catch (Exception e) {
             Assertions.assertTrue(e.getMessage().contains("403"), "Error indicates name duplicated");
         }
     }
+
+    @Test
+    public void loginSuccess() throws Exception{
+        server.register(new RegisterRequest("newUser", "password", "newUser@example.com"));
+        var AuthData = server.login(new LoginRequest("newUser","password"));
+        Assertions.assertNotNull(AuthData);
+    }
+
+    @Test
+    public void loginFailure() throws Exception{
+        try{
+            server.login(new LoginRequest("unregisteredUser", "password"));
+        } catch (Exception e) {
+            Assertions.assertTrue(e.getMessage().contains("401"), "Error indicates user unregistered");
+        }
+    }
+
+
 
 
 
