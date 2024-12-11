@@ -47,6 +47,10 @@ public class GameService {
             throw new UnauthorizedException("Error: unauthorized");
         }
 
+        if (!(playerColor.equalsIgnoreCase("white") || playerColor.equalsIgnoreCase("black"))) {
+            throw new BadRequestException("Error: must be WHITE or BLACK");
+        }
+
         // Find the game by ID
 //        ChessGame game = gameDAO.findGameById(gameId);
         ChessGame game = gameDAO.findGameByName(gameName);
