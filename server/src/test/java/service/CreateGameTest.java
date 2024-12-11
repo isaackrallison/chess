@@ -24,7 +24,7 @@ public class CreateGameTest {
         String gameName = "Test Game";
 
         // Act
-        gameDAO.createGame(gameIdNum, chessGame, gameName);
+        gameDAO.createGame(chessGame, gameName);
 
         // Assert
         List<GameData> games = gameDAO.getAllGames();

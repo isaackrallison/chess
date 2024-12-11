@@ -43,8 +43,8 @@ public class PostLoginClient {
 
     private String create(String... params) throws ResponseException{
         if (params.length == 1) {
-            int gameIdNum = server.createGame(params[0], authToken);
-            return String.format("Game created.\n");
+            String gameName = server.createGame(params[0], authToken);
+            return String.format("Game %s created.\n", gameName);
         }
         throw new ResponseException(400, "Expected: create <NAME> ");
         }
@@ -55,7 +55,16 @@ public class PostLoginClient {
             List<GameData> games = server.listGames(authToken);
 
             for (GameData game : games) {
-                gameNameIdList += "ID: " + game.gameID() + ", Name: " + game.gameName() + "\n";
+                String whitePlayer = game.whiteUsername();
+                String blackPlayer = game.blackUsername();
+                if (whitePlayer == null) {
+                    whitePlayer = "open";
+                }
+                if (blackPlayer == null) {
+                    blackPlayer = "open";
+                }
+                gameNameIdList += "GameName: " + game.gameName() + ", WhitePlayer: " + whitePlayer + ", BlackPlayer: " + blackPlayer + "\n";
+
             }
 
             return String.format("All Games:\n%s", gameNameIdList);
@@ -64,13 +73,19 @@ public class PostLoginClient {
     }
 
 
-    private String join(String... params) throws ResponseException{
+    private String join(String... params) throws ResponseException {
         if (params.length == 2) {
-            server.joinGame(params[1], Integer.parseInt(params[0]), authToken);
-            ChessBoardUi.main(params);
-            return String.format("Joining %s as %s:", params[0], params[1]);
+
+            // Check if the game is open
+            try {
+                server.joinGame(params[1], params[0], authToken);
+                ChessBoardUi.main(params);
+
+            } catch (Exception e) {
+                throw new ResponseException(400, "It looks like we are having an issue, make sure the color is open, Expected: join <ID> [WHITE|BLACK]");
+            }
         }
-        throw new ResponseException(400, "Expected: join <ID> [WHITE|BLACK]");
+        return String.format("Joining %s as %s:", params[0], params[1]);
     }
 
     private String observe(String... params) throws ResponseException {
@@ -91,13 +106,13 @@ public class PostLoginClient {
 
     public String help() {
         return """
-                create <NAME>           - a game
-                list                    - games
-                join <ID> [WHITE|BLACK] - a game
-                observe <ID>            - a game
-                logout                  - when you are done
-                quit                    - playing chess
-                help                    - with possible commands
+                create <NAME>                   - a game
+                list                            - games
+                join <GameName> [WHITE|BLACK]   - a game
+                observe <GameName>              - a game
+                logout                          - when you are done
+                quit                            - playing chess
+                help                            - with possible commands
                 """;
     }
 }

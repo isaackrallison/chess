@@ -140,8 +140,8 @@ public class ServerFacadeTests {
             var authData = server.register(new RegisterRequest("newUser", "password", "email@gmail.com"));
             server.createGame("newTest", authData.authToken());
             server.createGame("newnewTest", authData.authToken());
-            server.joinGame("WHITE", 1, authData.authToken());
-            server.joinGame("WHITE", 1, authData.authToken());
+            server.joinGame("WHITE", "a", authData.authToken());
+            server.joinGame("WHITE", "a", authData.authToken());
         } catch (Exception e) {
             Assertions.assertTrue(e.getMessage().contains("4"), "Error indicates user unregistered");
         }
@@ -150,7 +150,7 @@ public class ServerFacadeTests {
     @Test
     public void joinGameFailure() throws Exception{
         try {
-            server.joinGame("WHITE", 1,"bad Auth");
+            server.joinGame("WHITE", "a","bad Auth");
         } catch (Exception e) {
             Assertions.assertTrue(e.getMessage().contains("401"), "Error indicates user unregistered");
         }

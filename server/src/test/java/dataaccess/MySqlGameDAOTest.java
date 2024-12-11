@@ -29,7 +29,7 @@ public class MySqlGameDAOTest {
     public void testCreateGamePositive() throws DataAccessException {
         ChessGame game = new ChessGame(); // Assuming you have a constructor or method to create a game
         String gameName = "Test Game";
-        gameDAO.createGame(1, game, gameName);
+        gameDAO.createGame(game, gameName);
 
         // Verify that the game was created
         GameData createdGame = gameDAO.getAllGames().get(0);
@@ -42,8 +42,8 @@ public class MySqlGameDAOTest {
     public void testGetAllGames() throws DataAccessException {
         ChessGame game1 = new ChessGame(); // Create a game instance
         ChessGame game2 = new ChessGame(); // Create another game instance
-        gameDAO.createGame(1, game1, "Game One");
-        gameDAO.createGame(2, game2, "Game Two");
+        gameDAO.createGame(game1, "Game One");
+        gameDAO.createGame(game2, "Game Two");
 
         // Retrieve all games
         List<GameData> games = gameDAO.getAllGames();
@@ -55,27 +55,27 @@ public class MySqlGameDAOTest {
     @Test
     public void testFindGameByIdPositive() throws DataAccessException {
         ChessGame game = new ChessGame(); // Create a game instance
-        gameDAO.createGame(1, game, "Game One");
+        gameDAO.createGame(game, "Game One");
 
         // Retrieve the game by ID
-        ChessGame retrievedGame = gameDAO.findGameById(1);
+        ChessGame retrievedGame = gameDAO.findGameByName("a");
         assertNotNull(retrievedGame);
     }
 
     @Test
     public void testFindGameByIdNegative() throws DataAccessException {
         // Try to retrieve a game that doesn't exist
-        ChessGame retrievedGame = gameDAO.findGameById(999); // Assuming this ID does not exist
+        ChessGame retrievedGame = gameDAO.findGameByName("notreal"); // Assuming this ID does not exist
         assertNull(retrievedGame);
     }
 
     @Test
     public void testUpdateGame() throws DataAccessException {
         ChessGame game = new ChessGame(); // Create a game instance
-        gameDAO.createGame(1, game, "Game One");
+        gameDAO.createGame(game, "GameOne");
 
         // Update the game with a player's username
-        gameDAO.updateGame("WHITE", 1, "Player1");
+        gameDAO.updateGame("WHITE", "a", "Player1");
 
         GameData updatedGame = gameDAO.getAllGames().get(0);
         assertEquals("Player1", updatedGame.whiteUsername());
@@ -84,7 +84,7 @@ public class MySqlGameDAOTest {
     @Test
     public void testClearGames() throws DataAccessException {
         ChessGame game = new ChessGame();
-        gameDAO.createGame(1, game, "Game One");
+        gameDAO.createGame(game, "GameOne");
 
         // Clear games
         gameDAO.clearGames();

@@ -43,19 +43,19 @@ public class ServerFacade {
         return response.games();
     }
 
-    public int createGame(String gameName, String authToken) throws ResponseException {
+    public String createGame(String gameName, String authToken) throws ResponseException {
         var path = "/game";
         record CreateGameRequest(String gameName) {}
         record CreateGameResponse(int gameId) {}  // Adjusted to match expected response
 
         CreateGameRequest request = new CreateGameRequest(gameName);
         CreateGameResponse response = this.makeRequest("POST", path, request, CreateGameResponse.class, authToken);
-        return response.gameId();  // Extract the gameId field from the response
+        return gameName;  // Extract the gameId field from the response
     }
 
-    public void joinGame(String color, int gameIdNum, String authToken) throws ResponseException {
-        var path = String.format("/game", gameIdNum);
-        JoinGameRequest request = new JoinGameRequest(color, gameIdNum);
+    public void joinGame(String color, String gameName, String authToken) throws ResponseException {
+        var path = String.format("/game", gameName);
+        JoinGameRequest request = new JoinGameRequest(color, gameName);
         this.makeRequest("PUT", path, request, null, authToken);
     }
 

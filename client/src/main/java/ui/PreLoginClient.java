@@ -33,21 +33,29 @@ public class PreLoginClient {
 
 
     public String register(String... params) throws ResponseException {
-        if (params.length == 3) {
-            var data = server.register(new RegisterRequest(params[0], params[1], params[2]));
-            String autToken = data.authToken();
-            return String.format("You signed in as %s.\n" + autToken, params[0]);
-        }
-        throw new ResponseException(400, "Expected: register <USERNAME> <PASSWORD> <EMAIL>");
-        }
+        try {
+            if (params.length == 3) {
+                var data = server.register(new RegisterRequest(params[0], params[1], params[2]));
+                String autToken = data.authToken();
+                return String.format("You signed in as %s.\n" + autToken, params[0]);
+            }
+            } catch(Exception e){
+                throw new ResponseException(400, "Username might be taken, Expected: register <USERNAME> <PASSWORD> <EMAIL>");
+            }
+        return "Expected: register <USERNAME> <PASSWORD> <EMAIL>";
+    }
 
     public  String login(String... params) throws ResponseException {
-        if (params.length == 2) {
-            var data = server.login(new LoginRequest(params[0], params[1]));
-            String authToken = data.authToken();
-            return String.format("You signed in as %s.\n" + authToken, params[0]);
+        try {
+            if (params.length == 2) {
+                var data = server.login(new LoginRequest(params[0], params[1]));
+                String authToken = data.authToken();
+                return String.format("You signed in as %s.\n" + authToken, params[0]);
+            }
+        } catch (Exception e) {
+            throw new ResponseException(400, "Please check the username and password, Expected: login <USERNAME> <PASSWORD>");
         }
-        throw new ResponseException(400, "Expected: login <USERNAME> <PASSWORD>");
+        return "Expected: login <USERNAME> <PASSWORD>";
     }
 
     public String help() {

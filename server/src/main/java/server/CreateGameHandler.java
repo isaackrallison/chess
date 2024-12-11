@@ -43,14 +43,15 @@ public class CreateGameHandler implements Route {
             }
 
             // Call the service layer to create a new game
-            int gameID = gameService.createGame(gameName, authToken);
+            String name = gameService.createGame(gameName, authToken);
 
             // Set response type and status
             res.type("application/json");
             res.status(200);
 
             // Return the CreateGameResult serialized as JSON
-            return gson.toJson(Map.of("gameID", gameID));
+//            return gson.toJson(Map.of("gameID", gameID));
+            return gson.toJson(Map.of("gameName", gameName));
 
         } catch (BadRequestException e) {
             res.status(400);

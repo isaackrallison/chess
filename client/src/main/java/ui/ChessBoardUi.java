@@ -20,7 +20,7 @@ public class ChessBoardUi {
 
         out.print(ERASE_SCREEN);
 
-        String[] headers = {"h", "g", "f", "e", "d", "c", "b", "a"};
+        String[] headers= {"a", "b" ,"c", "d", "e", "f", "g", "h"};
 
         drawHeaders(out, headers);
 
@@ -35,13 +35,16 @@ public class ChessBoardUi {
         out.println();
         out.println();
 
-        String[] newHeaders= {"a", "b" ,"c", "d", "e", "f", "g", "h"};
+        String[] newHeaders = {"h", "g", "f", "e", "d", "c", "b", "a"};
 
         drawHeaders(out, newHeaders);
 
         drawChessBoard(out, game.getBoard(),false);
 
         drawHeaders(out, newHeaders);
+
+        reset(out);
+
     }
 
     private static void drawHeaders(PrintStream out,String[] headers) {
@@ -52,7 +55,6 @@ public class ChessBoardUi {
 
         out.print("    ");
         for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
-//            drawHeader(out, headers[boardCol]);
             out.print(SET_BG_COLOR_BLACK);
             out.print(SET_TEXT_COLOR_WHITE);
             out.printf("%-11s", headers[boardCol]);
@@ -190,6 +192,11 @@ public class ChessBoardUi {
     private static void setBlackWrite(PrintStream out) {
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
+    }
+
+    public static  void reset(PrintStream out) {
+        out.print(RESET_BG_COLOR);
+        out.print(RESET_TEXT_COLOR);
     }
 
     private static void printPiece(PrintStream out, String symbol, String backGroundColor) {

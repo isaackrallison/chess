@@ -34,16 +34,17 @@ public class JoinGameHandler implements Route {
             JoinGameRequest gameRequest = gson.fromJson(req.body(), JoinGameRequest.class);
 
             // Validate the game ID and player color
-            int gameId = gameRequest.gameID(); // Assuming GameRequest has a method gameID()
+            String gameName = gameRequest.gameName();
             String playerColor = gameRequest.playerColor(); // Assuming GameRequest has a method playerColor()
 
-            if (gameId <= 0 || playerColor == null || playerColor.isEmpty()) {
-                res.status(400); // Bad request
-                return gson.toJson(new ErrorResponse("Error: bad request - missing or invalid gameId or playerColor"));
-            }
+//            if (gameId <= 0 || playerColor == null || playerColor.isEmpty()) {
+//                res.status(400); // Bad request
+//                return gson.toJson(new ErrorResponse("Error: bad request - missing or invalid gameId or playerColor"));
+//            }
+
 
             // Call the service layer to join the game
-            gameService.joinGame(gameId, playerColor, authToken);
+            gameService.joinGame(gameName, playerColor, authToken);
 
             // Set response type and status
             res.type("application/json");

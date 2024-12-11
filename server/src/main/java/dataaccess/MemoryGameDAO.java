@@ -17,16 +17,16 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
-    public void createGame(int gameIdNum, ChessGame game, String gameName) {
+    public void createGame(ChessGame game, String gameName) {
         // Create a new GameData instance and add it to the set
-        GameData gameData = new GameData(gameIdNum, null, null, gameName, game);
+        GameData gameData = new GameData(0, null, null, gameName, game);
         gameStorage.add(gameData);
     }
 
     @Override
-    public ChessGame findGameById(int gameId) {
+    public ChessGame findGameByName(String gameName) {
         for (GameData gameData : gameStorage) {
-            if (gameData.gameID() == gameId) {
+            if (gameData.gameName() == gameName) {
                 return gameData.game();
             }
         }
@@ -34,10 +34,10 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
-    public void updateGame(String playerColor, int gameId, String username) {
+    public void updateGame(String playerColor, String gameName, String username) {
         GameData updatedGameData = null; // This will hold the updated game data
         for (GameData gameData : gameStorage) {
-            if (gameData.gameID() == gameId) {
+            if (gameData.gameName() == gameName) {
                 if (playerColor.equalsIgnoreCase("BLACK")) {
                     if (gameData.blackUsername() == null) {
                         updatedGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), username, gameData.gameName(), gameData.game());
@@ -57,7 +57,7 @@ public class MemoryGameDAO implements GameDAO {
 
         // If we created updatedGameData, remove the old one and add the new one
         if (updatedGameData != null) {
-            gameStorage.removeIf(gameData -> gameData.gameID() == gameId); // Remove the old game data
+            gameStorage.removeIf(gameData -> gameData.gameName() == gameName); // Remove the old game data
             gameStorage.add(updatedGameData); // Add the updated game data
         }
     }

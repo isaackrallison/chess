@@ -37,14 +37,14 @@ public class MySqlGameDAO implements GameDAO {
     }
 
     @Override
-    public void createGame(int gameIdNum, ChessGame game, String gameName) throws DataAccessException {
-        String sql = "INSERT INTO games (game_id, game_name, game_data) VALUES (?, ?, ?)";
+    public void createGame(ChessGame game, String gameName) throws DataAccessException {
+        String sql = "INSERT INTO games (game_name, game_data) VALUES (?, ?)";
 
         try (var conn = DatabaseManager.getConnection();
              var pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, gameIdNum);
-            pstmt.setString(2, gameName);
-            pstmt.setString(3, ChessGameAdapter.serialize(game)); // Serialize the game to JSON
+//            pstmt.setInt(1, gameIdNum);
+            pstmt.setString(1, gameName);
+            pstmt.setString(2, ChessGameAdapter.serialize(game));
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("Unable to create game: " + e.getMessage());
@@ -52,13 +52,14 @@ public class MySqlGameDAO implements GameDAO {
     }
 
     @Override
-    public ChessGame findGameById(int gameId) throws DataAccessException {
-        String sql = "SELECT game_data FROM games WHERE game_id = ?";
+    public ChessGame findGameByName(String gameName) throws DataAccessException {
+        String sql = "SELECT game_data FROM games WHERE game_name = ?";
         ChessGame game = null;
 
         try (var conn = DatabaseManager.getConnection();
              var pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, gameId);
+//            pstmt.setInt(1, gameId);
+            pstmt.setString(1, gameName);
             try (var rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     String gameData = rs.getString("game_data");
@@ -66,24 +67,28 @@ public class MySqlGameDAO implements GameDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new DataAccessException("Unable to find game: " + e.getMessage());
+            throw new DataAccessException("Unable to find game with name " + gameName + e.getMessage());
         }
 
         return game;
     }
 
     @Override
-    public void updateGame(String playerColor, int gameId, String username) throws DataAccessException {
-        String sql = "UPDATE games SET " + (playerColor.equalsIgnoreCase("WHITE") ? "white_username" : "black_username") + " = ? WHERE game_id = ?";
+    public void updateGame(String playerColor, String gameName, String username) throws DataAccessException {
+        String sql = "UPDATE games SET " +
+                (playerColor.equalsIgnoreCase("WHITE") ? "white_username" : "black_username") +
+                " = ? WHERE game_name = ?";
 
         try (var conn = DatabaseManager.getConnection();
              var pstmt = conn.prepareStatement(sql)) {
 
             // Check if the username already exists for the specified color
-            String checkSql = "SELECT " + (playerColor.equalsIgnoreCase("WHITE") ? "white_username" : "black_username") +
-                    " FROM games WHERE game_id = ?";
+            String checkSql = "SELECT " +
+                    (playerColor.equalsIgnoreCase("WHITE") ? "white_username" : "black_username") +
+                    " FROM games WHERE game_name = ?";
+
             try (var checkStmt = conn.prepareStatement(checkSql)) {
-                checkStmt.setInt(1, gameId);
+                checkStmt.setString(1, gameName);
                 try (var rs = checkStmt.executeQuery()) {
                     if (rs.next() && rs.getString(1) != null) {
                         throw new IllegalStateException("Error: color already taken");
@@ -92,12 +97,13 @@ public class MySqlGameDAO implements GameDAO {
             }
 
             pstmt.setString(1, username);
-            pstmt.setInt(2, gameId);
+            pstmt.setString(2, gameName);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("Unable to update game: " + e.getMessage());
         }
     }
+
 
 
     @Override
@@ -116,7 +122,7 @@ public class MySqlGameDAO implements GameDAO {
         DatabaseManager.createDatabase();
         String createStatement = """
             CREATE TABLE IF NOT EXISTS games (
-              game_id INT PRIMARY KEY,
+              game_id INT PRIMARY KEY AUTO_INCREMENT,
               game_name VARCHAR(255) NOT NULL,
               game_data TEXT NOT NULL,
               white_username VARCHAR(255),

@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface GameDAO {
     List<GameData> getAllGames() throws DataAccessException;
-    void createGame(int gameIdNum, ChessGame game, String gameName) throws DataAccessException;
-    ChessGame findGameById(int gameId) throws DataAccessException;
-    void updateGame(String playerColor, int gameId, String username) throws DataAccessException;
+    void createGame(ChessGame game, String gameName) throws DataAccessException;
+    ChessGame findGameByName(String gameName) throws DataAccessException;
+    void updateGame(String playerColor, String gameName, String username) throws DataAccessException;
     void clearGames() throws DataAccessException;
 }
 
